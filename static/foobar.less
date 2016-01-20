@@ -1,0 +1,159 @@
+// variables
+
+@bg1: darkgrey;
+@bg2: lightgrey;
+@bg3: black;
+@fg1: black;
+@fg2: black;
+@fg3: white;
+@border: blue;
+@shadow: black;
+
+@topbar-height: 1.5em;
+@statusbar-height: 1.5em;
+
+// normalize
+
+* {
+	box-sizing: border-box;
+}
+a {
+	text-decoration: none;
+	color: inherit;
+}
+table {
+	color: inherit;
+}
+
+// layout
+
+.topbar,
+.statusbar,
+.file-browser,
+.playlist {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.topbar {
+	bottom: auto;
+	height: @topbar-height;
+}
+
+.file-browser,
+.playlist {
+	top: @topbar-height;
+	bottom: @statusbar-height;
+	overflow: auto;
+}
+
+.file-browser {
+	right: auto;
+	width: 20%;
+}
+
+.playlist {
+	left: auto;
+	width: 80%;
+}
+
+.statusbar {
+	top: auto;
+	height: @statusbar-height;
+}
+
+// foo
+
+html {
+	color: @fg1;
+	background: @bg1;
+}
+
+.file-browser,
+.playlist {
+	color: @fg3;
+	background: @bg3;
+}
+
+.statusbar,
+.top {
+	color: @fg2;
+	background: @bg2;
+}
+
+.statusbar {
+	border-top: 1px solid @border;
+}
+.top {
+	border-bottom: 1px solid @border;
+}
+.file-browser {
+	border-right: 1px solid @border;
+}
+
+// slider
+
+.playback-buttons,
+.volume,
+.seeker {
+	display: inline-block;
+	position: relative;
+}
+
+.seeker {
+	height: 0.6em;
+	width: 20em;
+	background: @bg2;
+	box-shadow: 1px 1px 2px @shadow inset;
+}
+
+.volume {
+	width: 5em;
+	height: 0.5em;
+}
+.volume .bg {
+	position: absolute;
+	width: 100%;
+	height: 0.8em;
+	overflow: hidden;
+
+	div {
+		background: blue;
+		width: 100%;
+		height: 1em;
+		transform: rotate(-8deg);
+		transform-origin: 5.3em 0;
+		background: @bg2;
+		box-shadow: 1px 1px 2px @shadow inset;
+	}
+}
+
+.slider {
+	position: absolute;
+	top: -0.3em;
+	display: inline-block;
+	width: 0.7em;
+	height: 1.2em;
+	background: @bg2;
+	border: 1px solid @border;
+	border-radius: 2px;
+	box-shadow: 1px 1px 2px @shadow;
+}
+
+.playback-buttons a {
+	display: inline-block;
+	color: white;
+	text-shadow: 1px 0 black,-1px 0 black,0 1px black,0 -1px black;
+	width: 1.5em;
+	padding: 0.2em;
+	text-align: center;
+	border: 1px solid transparent;
+	border-radius: 2px;
+
+	&:focus, &:hover {
+		border-color: @border;
+	}
+}
