@@ -1,6 +1,7 @@
 import os
 
 from fakes import Fakes, jsonify
+import mutagen
 
 MUSIC_DIR = os.path.expanduser('~/Musik')
 
@@ -35,6 +36,35 @@ def files_route(request):
         head[parts[-1]] = path
 
     return jsonify(tree)
+
+
+def find_album_art(path):
+    d = os.path.dirname(path)
+    candidates = os.listdir(d)
+
+    for filename in candidates:
+        if filename.startswith('AlbumArt'):
+            return os.path.join(d, filename)
+    for filename in candidates:
+        if filename[-3:].lower() in ['jpg', 'gif', 'png']:
+            return os.path.join(d, filename)
+
+
+@app.route('/info.json')
+def info_route(request):
+    path = request.GET['path']
+
+    metadata = mutagen.File(path, easy=True)
+    get = lambda key: metadata.get(key, [None])[0]
+
+    metadata = {
+        'artist': get('artist'),
+        'album': get('album'),
+        'tracknumber': get('tracknumber'),
+        'title': get('title'),
+        'art': find_album_art(path),
+    }
+    return jsonify(metadata)
 
 
 if __name__ == '__main__':
