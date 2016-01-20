@@ -1,0 +1,49 @@
+<div class="topbar">
+	<div class="playback-buttons">
+		<a href="#" class="stop"><i class="fa fa-stop"></i></a>
+		<a href="#" class="play"><i class="fa fa-play"></i></a>
+		<a href="#" class="pause"><i class="fa fa-pause"></i></a>
+		<a href="#" class="prev"><i class="fa fa-step-backward"></i></a>
+		<a href="#" class="next"><i class="fa fa-step-forward"></i></a>
+	</div>
+
+	<div class="seeker"><div class="slider"></div></div>
+	<div class="volume">
+		<div class="bg"><div></div></div>
+		<div class="slider"></div>
+	</div>
+</div>
+
+<div class="file-browser">
+	<input type="search" />
+	<ol>
+		<li><a href="#">{{ path }}</a></li>
+	</ol>
+</div>
+
+<div class="playlist">
+	<div class="tab">
+		<table>
+			<thead>
+				<th>playing</th>
+				<th>Artist</th>
+				<th>Title</th>
+				<th>Album</th>
+				<th>Duration</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>{{playing}}</td>
+					<td>{{Artist}}</td>
+					<td>{{Title}}</td>
+					<td>{{Album}}</td>
+					<td>{{Duration}}</td>
+				</td>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="statusbar">
+	{{ status }} | Total time: {{ totalTime }}
+</div>
