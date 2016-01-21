@@ -2,6 +2,7 @@ import os
 
 from fakes import Fakes, jsonify
 import mutagen
+import audioread
 
 MUSIC_DIR = os.path.expanduser('~/Musik')
 
@@ -44,14 +45,17 @@ def info_route(request):
     metadata = mutagen.File(path, easy=True)
     get = lambda key: metadata.get(key, [None])[0]
 
-    metadata = {
-        'artist': get('artist'),
-        'album': get('album'),
-        'tracknumber': get('tracknumber'),
-        'title': get('title'),
-        'art': find_album_art(path),
-    }
-    return jsonify(metadata)
+    with audioread.audio_open(path) as fh:
+        metadata = {
+            'artist': get('artist'),
+            'album': get('album'),
+            'tracknumber': get('tracknumber'),
+            'title': get('title'),
+            'art': find_album_art(path),
+            'duration': '{}:{:02}'.format(int(fh.duration / 60), int(fh.duration % 60)),
+            'path': request.GET['path'],
+        }
+        return jsonify(metadata)
 
 
 app.app.router.add_static('/proxy/', MUSIC_DIR)
