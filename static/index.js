@@ -45,9 +45,22 @@
             self.play(self.current - 1);
         };
 
-        muu.$.on(player, 'ended', function() {
-            self.next();
-        });
+        var updateStatus = function() {
+            _.forEach(self.rows, function(row) {
+                if (row.path === decodeURI(player.src).slice(21)) {
+                    row.playing = !player.paused;
+                    row.paused = player.paused;
+                } else {
+                    row.playing = false;
+                    row.paused = false;
+                }
+            });
+            self.dispatchEvent('change');
+        };
+
+        muu.$.on(player, 'ended', self.next);
+        muu.$.on(player, 'play', updateStatus);
+        muu.$.on(player, 'pause', updateStatus);
     };
 
     var createTree = function(paths, expanded) {

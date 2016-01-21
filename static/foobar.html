@@ -25,7 +25,10 @@
 			<tbody>
 				{{#playlist}}
 				<tr href="{{path}}" data-ondblclick="playlist-click">
-					<td>{{playing}}</td>
+					<td>
+						{{#playing}}<i class="fa fa-play"></i>{{/playing}}
+						{{#paused}}<i class="fa fa-pause"></i>{{/paused}}
+					</td>
 					<td>{{title}}</td>
 					<td>{{artist}}</td>
 					<td>{{duration}}</td>
