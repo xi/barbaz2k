@@ -126,13 +126,7 @@
             });
         });
 
-        var slider = '<div class="{{class}}" data-onclick="click"><div class="slider" style="left: {{value}}%"></div></div>';
-        var sliderValue = function(element, event) {
-            var x0 = element.getBoundingClientRect().left;
-            var x1 = element.getBoundingClientRect().right;
-            var x = event.clientX;
-            return (x - x0) / (x1 - x0);
-        };
+        var slider = '<input class="{{class}}" data-oninput="change" data-onchange="change" type="range" min="0" max="1000" step="10" name="value" value="{{value}}"/>';
 
         registry.registerDirective('seeker', slider, function(self, element) {
             self.update({
@@ -141,32 +135,26 @@
             });
 
             muu.$.on(player, 'timeupdate', function() {
-                self.update({
-                    value: player.currentTime / player.duration * 100,
-                    class: 'seeker',
-                });
+                self.setModel('value', player.currentTime / player.duration * 1000);
             });
 
-            self.on('click', function(event) {
-                player.currentTime = player.duration * sliderValue(element, event);
+            self.on('change', function(event) {
+                player.currentTime = player.duration * self.getModel('value') / 1000;
             });
         });
 
         registry.registerDirective('volume', slider, function(self, element) {
             self.update({
-                value: player.volume * 100,
+                value: player.volume * 1000,
                 class: 'volume',
             });
 
             muu.$.on(player, 'volumechange', function() {
-                self.update({
-                    value: player.volume * 100,
-                    class: 'volume',
-                });
+                self.setModel('value', player.volume * 1000);
             });
 
-            self.on('click', function(event) {
-                player.volume = sliderValue(element, event);
+            self.on('change', function(event) {
+                player.volume = self.getModel('value') / 1000;
             });
         });
 

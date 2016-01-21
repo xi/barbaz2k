@@ -67,7 +67,6 @@ html {
 .volume,
 .seeker {
   display: inline-block;
-  position: relative;
 }
 .volume,
 .seeker {
@@ -78,17 +77,6 @@ html {
 }
 .volume {
   width: 5em;
-}
-.slider {
-  position: absolute;
-  top: -0.3em;
-  display: inline-block;
-  width: 0.7em;
-  height: 1.2em;
-  background: lightgrey;
-  border: 1px solid blue;
-  border-radius: 2px;
-  box-shadow: 1px 1px 2px black;
 }
 .playback-buttons a {
   display: inline-block;
