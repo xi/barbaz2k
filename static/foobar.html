@@ -18,18 +18,16 @@
 		<table>
 			<thead>
 				<th>playing</th>
-				<th>Artist</th>
 				<th>Title</th>
-				<th>Album</th>
+				<th>Artist</th>
 				<th>Duration</th>
 			</thead>
 			<tbody>
 				{{#playlist}}
 				<tr href="{{path}}" data-ondblclick="playlist-click">
 					<td>{{playing}}</td>
-					<td>{{artist}}</td>
 					<td>{{title}}</td>
-					<td>{{album}}</td>
+					<td>{{artist}}</td>
 					<td>{{duration}}</td>
 				</td>
 				{{/playlist}}

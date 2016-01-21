@@ -50,7 +50,7 @@ def info_route(request):
             'artist': get('artist'),
             'album': get('album'),
             'tracknumber': get('tracknumber'),
-            'title': get('title'),
+            'title': get('title') or os.path.basename(path),
             'art': find_album_art(path),
             'duration': '{}:{:02}'.format(int(fh.duration / 60), int(fh.duration % 60)),
             'path': request.GET['path'],
