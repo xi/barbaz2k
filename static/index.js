@@ -278,7 +278,7 @@
 
                     var gradient = ctx.createLinearGradient(0, y0, 0, y1);
                     gradient.addColorStop(0, "white");
-                    gradient.addColorStop(1, "blue");
+                    gradient.addColorStop(1, "#006FA5");
                     ctx.fillStyle = gradient;
 
                     ctx.fillRect(x, y0, width, y1);

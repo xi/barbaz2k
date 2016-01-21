@@ -43,18 +43,12 @@ table {
 }
 html {
   color: black;
-  background: #F0F0F0;
+  background: #FDFDFD;
   font-size: 14px;
 }
-.file-browser,
 .playlist {
   color: white;
   background: black;
-}
-.statusbar,
-.top {
-  color: black;
-  background: #FDFDFD;
 }
 .statusbar {
   border-top: 1px solid #878B93;
@@ -97,8 +91,6 @@ html {
   border-color: #878B93;
 }
 .file-browser {
-  background: #FDFDFD;
-  color: black;
   display: flex;
   flex-direction: column;
 }

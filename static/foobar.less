@@ -1,14 +1,13 @@
 // variables
 
-@bg1: #F0F0F0;
-@bg2: #FDFDFD;
-@bg3: black;
+@bg1: #FDFDFD;
+@bg2: black;
 @fg1: black;
-@fg2: black;
-@fg3: white;
+@fg2: white;
 @border: #878B93;
 @lines: #E0E0E0;
 @shadow: black;
+@highlight: #006FA5;
 
 @topbar-height: 1.8em;
 @statusbar-height: 1.5em;
@@ -75,14 +74,7 @@ html {
 	font-size: 14px;
 }
 
-.file-browser,
 .playlist {
-	color: @fg3;
-	background: @bg3;
-}
-
-.statusbar,
-.top {
 	color: @fg2;
 	background: @bg2;
 }
@@ -109,7 +101,7 @@ html {
 .seeker {
 	height: 0.6em;
 	width: 100%;
-	background: @bg2;
+	background: @bg1;
 	box-shadow: 1px 1px 2px @shadow inset;
 	position: relative;
 	top: -0.1em;
@@ -136,15 +128,13 @@ html {
 
 
 .file-browser {
-	background: @bg2;
-	color: @fg2;
 	display: flex;
 	flex-direction: column;
 
 	input {
 		width: 96%;
-		background: @bg3;
-		color: @fg3;
+		background: @bg2;
+		color: @fg2;
 		line-height: 2;
 		margin: 2%;
 	}
@@ -179,8 +169,8 @@ html {
 		overflow: auto;
 
 		font-size: 12px;
-		background: @bg3;
-		color: @fg3;
+		background: @bg2;
+		color: @fg2;
 		white-space: nowrap;
 
 		padding: 0.5em;
