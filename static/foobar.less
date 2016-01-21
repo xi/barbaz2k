@@ -133,11 +133,23 @@ html {
 .file-browser ul {
 	list-style: none;
 	padding: 0;
+	white-space: nowrap;
 
 	ul {
 		border-left: 1px dotted white;
 		padding-left: 0.5em;
 		margin-left: 0.5em;
-		white-space: nowrap
+	}
+
+	.expander {
+		display: inline-block;
+		vertical-align: middle;
+		text-align: center;
+		height: 11px;
+		width: 11px;
+		font-size: 9px;
+		line-height: 9px;
+		border: 1px dotted white;
+		margin-left: 3px;
 	}
 }

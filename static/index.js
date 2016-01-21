@@ -39,7 +39,7 @@
         };
     };
 
-    var createTree = function(paths) {
+    var createTree = function(paths, expanded) {
         var tree = {
             dirs: [],
             files: [],
@@ -58,6 +58,7 @@
                         title: part,
                         dirs: [],
                         files: [],
+                        expanded: expanded,
                     }
                     head.dirs.push(item)
                 }
@@ -80,7 +81,7 @@
             });
         }
 
-        return createTree(paths);
+        return createTree(paths, q);
     };
 
     Promise.all([

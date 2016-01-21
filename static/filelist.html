@@ -1,7 +1,9 @@
 {{#dirs}}
 <li>
-	{{title}}
+	<a class="expander" href="#">{{#expanded}}&ndash;{{/expanded}}{{^expanded}}+{{/expanded}}</a> {{title}}
+	{{#expanded}}
 	<ul>{{> filelist}}</ul>
+	{{/expanded}}
 </li>
 {{/dirs}}
 {{#files}}
