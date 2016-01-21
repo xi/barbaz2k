@@ -1,0 +1,9 @@
+{{#dirs}}
+<li>
+	{{title}}
+	<ul>{{> filelist}}</ul>
+</li>
+{{/dirs}}
+{{#files}}
+<li><a data-onclick="play" href="/proxy{{path}}">{{title}}</li>
+{{/files}}

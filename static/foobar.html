@@ -16,6 +16,11 @@
 
 <div class="file-browser">
 	<input type="search" />
+	{{#files}}
+	<ul>
+	{{> filelist}}
+	</ul>
+	{{/files}}
 	<ol>
 		<li><a href="#">{{ path }}</a></li>
 	</ol>
