@@ -232,6 +232,54 @@
             });
         });
 
+        registry.registerDirective('spectrum', '', function(self, element) {
+            self.update({});
+
+            var canvas = document.createElement('canvas');
+            canvas.className = 'spectrum';
+            element.appendChild(canvas);
+
+            var context = new AudioContext();
+            var analyser = context.createAnalyser();
+            analyser.fftSize = 64;
+            var source = context.createMediaElementSource(player);
+            source.connect(analyser);
+            source.connect(context.destination);
+
+            var updateCanvas = function() {
+                var spectrums = new Uint8Array(analyser.frequencyBinCount);
+                analyser.getByteFrequencyData(spectrums);
+
+                var ctx = canvas.getContext('2d');
+                var chartImage = new Image();
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                var n = spectrums.length;
+                for (var i = 0; i < n; i++) {
+                    var x = (i / n) * canvas.width;
+                    var width = canvas.width / n * 0.8;
+                    var height = spectrums[i] / 255 * canvas.height;
+
+                    var y0 = canvas.height - height;
+                    var y1 = canvas.height;
+
+                    var gradient = ctx.createLinearGradient(0, y0, 0, y1);
+                    gradient.addColorStop(0, "white");
+                    gradient.addColorStop(1, "blue");
+                    ctx.fillStyle = gradient;
+
+                    ctx.fillRect(x, y0, width, y1);
+                }
+            };
+
+            var intervalID = setInterval(updateCanvas, 100);
+
+            return function() {
+                clearInterval(intervalID);
+            };
+        });
+
         registry.linkAll(document);
     });
 })(muu, PromiseXHR, Mustache, _);

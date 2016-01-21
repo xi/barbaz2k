@@ -113,3 +113,8 @@ html {
   border: 1px dotted white;
   margin-left: 3px;
 }
+.spectrum {
+  height: 1em;
+  width: 8em;
+  background: black;
+}
