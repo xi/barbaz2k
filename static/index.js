@@ -188,7 +188,7 @@
             });
         });
 
-        var slider = '<input class="{{class}}" data-oninput="change" data-onchange="change" type="range" min="0" max="1000" step="10" name="value" value="{{value}}"/>';
+        var slider = '<input class="{{class}}" data-oninput="change" data-onchange="change" type="range" min="0" max="1000" name="value" value="{{value}}"/>';
 
         registry.registerDirective('seeker', slider, function(self, element) {
             self.update({
