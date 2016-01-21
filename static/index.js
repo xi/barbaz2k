@@ -152,6 +152,7 @@
                 self.update({
                     files: createTree2(files, null, self.getModel('q')),
                     playlist: playlist.rows,
+                    art: (playlist.rows[playlist.current] || {}).art,
                 });
             };
 

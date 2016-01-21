@@ -132,6 +132,9 @@ html {
   white-space: nowrap;
   padding: 0.5em;
 }
+.file-browser .art {
+  max-height: 30%;
+}
 .spectrum {
   height: 1.4em;
   width: 8em;

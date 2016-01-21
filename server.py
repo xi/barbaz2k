@@ -32,10 +32,10 @@ def find_album_art(path):
 
     for filename in candidates:
         if filename.startswith('AlbumArt'):
-            return os.path.join(d, filename)
+            return os.path.join(d, filename)[len(MUSIC_DIR):]
     for filename in candidates:
         if filename[-3:].lower() in ['jpg', 'gif', 'png']:
-            return os.path.join(d, filename)
+            return os.path.join(d, filename)[len(MUSIC_DIR):]
 
 
 @app.route('/info.json')
