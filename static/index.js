@@ -1,6 +1,44 @@
 (function(muu, xhr, Mustache, _) {
     'use strict';
 
+    var Playlist = function() {
+        this.rows = [];
+        this.element = document.createElement('div');
+        this.current = 0;
+
+        this.dispatchEvent = function(name, data) {
+            var event = muu.$.createEvent(name, undefined, undefined, data);
+            this.element.dispatchEvent(event);
+        };
+
+        this.on = function(name, fn) {
+            return muu.$.on(this.element, name, fn);
+        };
+
+        this.clear = function() {
+            this.rows = [];
+            this.dispatchEvent('clear');
+            this.dispatchEvent('change');
+        };
+        this.append = function(item) {
+            this.rows.push(item);
+            this.dispatchEvent('change');
+        };
+        this.delete = function(index) {
+            this.rows.splice(index, 1);
+            this.dispatchEvent('change');
+        };
+
+        this.next = function() {
+            this.current += 1;
+            return this.rows[this.current];
+        };
+        this.prev = function() {
+            this.current -= 1;
+            return this.rows[this.current];
+        };
+    };
+
     var createTree = function(paths) {
         var tree = {
             dirs: [],
@@ -54,6 +92,8 @@
                 return Mustache.render(a, b, partials);
             }
         });
+        registry.events.push('dragover');
+        registry.events.push('drop');
 
         var player = document.createElement('audio');
 
@@ -71,6 +111,18 @@
                 var url = event.currentTarget.href;
                 player.src = url;
                 player.play();
+            });
+
+            self.on('dragover', function(event) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = "copy";
+            });
+            self.on('drop', function(event) {
+                event.preventDefault();
+                var path = decodeURI(event.dataTransfer.getData('text')).slice(27);
+                xhr.get('/info.json?path=' + encodeURIComponent(path)).then(function(info) {
+                    console.log(info);
+                });
             });
         });
 
