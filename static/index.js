@@ -1,42 +1,53 @@
 (function(muu, xhr, Mustache, _) {
     'use strict';
 
-    var Playlist = function() {
-        this.rows = [];
-        this.element = document.createElement('div');
-        this.current = 0;
+    var Playlist = function(player) {
+        var self = this;
 
-        this.dispatchEvent = function(name, data) {
+        self.rows = [];
+        self.element = document.createElement('div');
+        self.current = 0;
+
+        self.dispatchEvent = function(name, data) {
             var event = muu.$.createEvent(name, undefined, undefined, data);
-            this.element.dispatchEvent(event);
+            self.element.dispatchEvent(event);
         };
 
-        this.on = function(name, fn) {
-            return muu.$.on(this.element, name, fn);
+        self.on = function(name, fn) {
+            return muu.$.on(self.element, name, fn);
         };
 
-        this.clear = function() {
-            this.rows = [];
-            this.dispatchEvent('clear');
-            this.dispatchEvent('change');
+        self.clear = function() {
+            self.rows = [];
+            self.dispatchEvent('clear');
+            self.dispatchEvent('change');
+            player.src= null;
         };
-        this.append = function(item) {
-            this.rows.push(item);
-            this.dispatchEvent('change');
+        self.append = function(item) {
+            self.rows.push(item);
+            self.dispatchEvent('change');
         };
-        this.delete = function(index) {
-            this.rows.splice(index, 1);
-            this.dispatchEvent('change');
+        self.delete = function(index) {
+            self.rows.splice(index, 1);
+            self.dispatchEvent('change');
         };
 
-        this.next = function() {
-            this.current += 1;
-            return this.rows[this.current];
+        self.play = function(i) {
+            self.current = i;
+            player.src = '//localhost:5003' + self.rows[i].path;
+            player.play();
+            self.dispatchEvent('change');
         };
-        this.prev = function() {
-            this.current -= 1;
-            return this.rows[this.current];
+        self.next = function() {
+            self.play(self.current + 1);
         };
+        self.prev = function() {
+            self.play(self.current - 1);
+        };
+
+        muu.$.on(player, 'ended', function() {
+            self.next();
+        });
     };
 
     var createTree = function(paths, expanded) {
@@ -109,7 +120,7 @@
         registry.events.push('dblclick');
 
         var player = document.createElement('audio');
-        var playlist = new Playlist();
+        var playlist = new Playlist(player);
 
         registry.registerDirective('foobar', template, function(self) {
             var update = function() {
@@ -123,9 +134,9 @@
 
             self.on('playlist-click', function(event) {
                 event.preventDefault();
-                var url = '//localhost:5003' + event.currentTarget.getAttribute('href');
-                player.src = url;
-                player.play();
+                var row = event.currentTarget;
+                var index = _.indexOf(row.parentNode.children, row);
+                playlist.play(index);
             });
 
             self.on('filter', update);
@@ -196,8 +207,15 @@
             });
             self.on('stop', function(event) {
                 event.preventDefault();
-                player.pause();
-                player.currentTime = 0;
+                player.src = null;
+            });
+            self.on('next', function(event) {
+                event.preventDefault();
+                playlist.next();
+            });
+            self.on('prev', function(event) {
+                event.preventDefault();
+                playlist.prev();
             });
         });
 
