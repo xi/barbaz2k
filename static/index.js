@@ -121,7 +121,7 @@
             self.on('drop', function(event) {
                 event.preventDefault();
                 var path = decodeURI(event.dataTransfer.getData('text')).slice(27);
-                xhr.get('/info.json?path=' + encodeURIComponent(path)).then(function(info) {
+                xhr.getJSON('/info.json?path=' + encodeURIComponent(path)).then(function(info) {
                     console.log(info);
                 });
             });
