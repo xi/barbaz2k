@@ -17,6 +17,10 @@
             return muu.$.on(self.element, name, fn);
         };
 
+        self.getTotalTime = function() {
+            return _.sum(_.map(self.rows, 'duration_raw')) || 0;
+        };
+
         self.clear = function() {
             self.rows = [];
             self.dispatchEvent('clear');
@@ -61,6 +65,14 @@
         muu.$.on(player, 'ended', self.next);
         muu.$.on(player, 'play', updateStatus);
         muu.$.on(player, 'pause', updateStatus);
+    };
+
+    var formatTime = function(duration) {
+        var s = '';
+        s += Math.round(duration / 60) || 0;
+        s += ':'
+        s += ('00' + Math.round(duration) % 60).slice(-2);
+        return s;
     };
 
     var createTree = function(paths, expanded) {
@@ -278,6 +290,22 @@
             return function() {
                 clearInterval(intervalID);
             };
+        });
+
+        registry.registerDirective('statusbar', '{{ status }} | {{time}} | Total time: {{ totalTime }}', function(self) {
+            var update = function() {
+                self.update({
+                    status: player.paused ? 'paused' : 'playing',
+                    time: formatTime(player.currentTime),
+                    totalTime: formatTime(playlist.getTotalTime()),
+                });
+            };
+
+            update();
+            playlist.on('change', update);
+            muu.$.on(player, 'timeupdate', update);
+            muu.$.on(player, 'play', update);
+            muu.$.on(player, 'pause', update);
         });
 
         registry.linkAll(document);
