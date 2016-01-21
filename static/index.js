@@ -120,6 +120,25 @@
         return createTree(paths, q);
     };
 
+    var nextLeaf = function(node, dir, down) {
+        if (down) {
+            if (node.children.length !== 0) {
+                var index = dir === 1 ? 0 : node.children.length - 1;
+                return nextLeaf(node.children[index], dir, true);
+            } else {
+                return node;
+            }
+        } else {
+            var siblings = node.parentNode.children;
+            var index = _.indexOf(siblings, node) + dir;
+            if (0 <= index && index < siblings.length) {
+                return nextLeaf(siblings[index], dir, true);
+            } else {
+                return nextLeaf(node.parentNode, dir);
+            }
+        }
+    };
+
     Promise.all([
         xhr.get('/static/foobar.html'),
         xhr.get('/static/filelist.html'),
@@ -143,6 +162,9 @@
         registry.events.push('drop');
         registry.events.push('input');
         registry.events.push('dblclick');
+        registry.events.push('keydown');
+        registry.events.push('focusin');
+        registry.events.push('focusout');
 
         var player = document.createElement('audio');
         var playlist = new Playlist(player);
@@ -158,6 +180,33 @@
 
             update();
 
+            self.on('focusout', function(event) {
+                var root = event.currentTarget;
+                if (!muu.$.isDescendant(event.relatedTarget, root)) {
+                    // FIXME: do not manipulate DOM directly
+                    event.target.classList.add('focus-inactive');
+                    root.setAttribute('tabindex', '0');
+                }
+            });
+
+            self.on('focusin', function(event) {
+                var root = event.currentTarget;
+                if (!muu.$.isDescendant(event.relatedTarget, root)) {
+                    var el = root.querySelector('.focus-inactive');
+                    if (el) {
+                        el.classList.remove('focus-inactive');
+                    }
+                    if (event.target !== root) {
+                        el = event.target;
+                    }
+                    if (!el) {
+                        el = root.querySelector('a:not(.expander)');
+                    }
+                    el.focus();
+                    root.setAttribute('tabindex', '-1');
+                }
+            });
+
             self.on('playlist-click', function(event) {
                 event.preventDefault();
                 var row = event.currentTarget;
@@ -170,7 +219,7 @@
 
             self.on('play', function(event) {
                 event.preventDefault();
-                var url = event.currentTarget.href;
+                var url = event.currentTarget.dataset.href;
                 player.src = url;
                 player.play();
             });
@@ -186,37 +235,57 @@
                     playlist.append(info);
                 });
             });
+
+            self.on('keydown', function(event) {
+                if (event.keyCode === 40) {
+                    event.preventDefault();
+                    var node = nextLeaf(event.currentTarget, 1);
+                    while (node.className === 'expander') {
+                        node = nextLeaf(node, 1);
+                    }
+                    node.focus();
+                } else if (event.keyCode === 38) {
+                    event.preventDefault();
+                    var node = nextLeaf(event.currentTarget, -1);
+                    while (node.className === 'expander') {
+                        node = nextLeaf(node, -1);
+                    }
+                    node.focus();
+                }
+            });
         });
 
-        var slider = '<input class="{{class}}" data-oninput="change" data-onchange="change" type="range" min="0" max="1000" name="value" value="{{value}}"/>';
+        var slider = '<input class="{{class}}" data-oninput="change" data-onchange="change" type="range" min="0" max="{{max}}" name="value" value="{{value}}"/>';
 
         registry.registerDirective('seeker', slider, function(self, element) {
             self.update({
                 value: 0,
+                max: 500,
                 class: 'seeker',
             });
 
             muu.$.on(player, 'timeupdate', function() {
-                self.setModel('value', player.currentTime / player.duration * 1000);
+                self.setModel('value', player.currentTime / player.duration * 500);
             });
 
             self.on('change', function(event) {
-                player.currentTime = player.duration * self.getModel('value') / 1000;
+                player.currentTime = player.duration * self.getModel('value') / 500;
             });
         });
 
         registry.registerDirective('volume', slider, function(self, element) {
             self.update({
-                value: player.volume * 1000,
+                value: player.volume * 500,
+                max: 100,
                 class: 'volume',
             });
 
             muu.$.on(player, 'volumechange', function() {
-                self.setModel('value', player.volume * 1000);
+                self.setModel('value', player.volume * 100);
             });
 
             self.on('change', function(event) {
-                player.volume = self.getModel('value') / 1000;
+                player.volume = self.getModel('value') / 100;
             });
         });
 

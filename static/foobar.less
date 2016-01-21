@@ -8,6 +8,8 @@
 @lines: #E0E0E0;
 @shadow: black;
 @highlight: #006FA5;
+@focus: #595959;
+@unfocus: #2A2A2A;
 
 @topbar-height: 1.8em;
 @statusbar-height: 1.5em;
@@ -16,6 +18,7 @@
 
 * {
 	box-sizing: border-box;
+	-webkit-user-select: none;
 }
 a {
 	text-decoration: none;
@@ -23,6 +26,9 @@ a {
 }
 table {
 	color: inherit;
+}
+*:focus {
+	outline: @highlight auto 5px;
 }
 
 // layout
@@ -203,5 +209,17 @@ html {
 
 	> *:last-child {
 		flex: auto;
+	}
+}
+
+.file-browser a {
+	padding: 1px;
+
+	&:focus {
+		background: @focus;
+		outline: none;
+	}
+	&.focus-inactive {
+		background: @unfocus;
 	}
 }

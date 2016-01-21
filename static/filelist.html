@@ -1,11 +1,12 @@
 {{#dirs}}
 <li>
-	<a class="expander" href="#">{{#expanded}}&ndash;{{/expanded}}{{^expanded}}+{{/expanded}}</a> {{title}}
+	<a class="expander" href="#" tabindex="-1">{{#expanded}}&ndash;{{/expanded}}{{^expanded}}+{{/expanded}}</a>
+	<a href="#" tabindex="-1" data-onkeydown="keydown">{{title}}</a>
 	{{#expanded}}
 	<ul>{{> filelist}}</ul>
 	{{/expanded}}
 </li>
 {{/dirs}}
 {{#files}}
-<li><a data-onclick="play" href="/proxy{{path}}">{{title}}</a></li>
+<li><a data-onclick="play" data-onkeydown="keydown" href="/proxy{{path}}" tabindex="-1">{{title}}</a></li>
 {{/files}}

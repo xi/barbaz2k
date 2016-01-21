@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  -webkit-user-select: none;
 }
 a {
   text-decoration: none;
@@ -7,6 +8,9 @@ a {
 }
 table {
   color: inherit;
+}
+*:focus {
+  outline: #006FA5 auto 5px;
 }
 .topbar,
 .statusbar,
@@ -155,4 +159,14 @@ html {
 }
 .topbar > *:last-child {
   flex: auto;
+}
+.file-browser a {
+  padding: 1px;
+}
+.file-browser a:focus {
+  background: #595959;
+  outline: none;
+}
+.file-browser a.focus-inactive {
+  background: #2A2A2A;
 }
