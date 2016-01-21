@@ -106,19 +106,30 @@
         registry.events.push('dragover');
         registry.events.push('drop');
         registry.events.push('input');
+        registry.events.push('dblclick');
 
         var player = document.createElement('audio');
+        var playlist = new Playlist();
 
         registry.registerDirective('foobar', template, function(self) {
             var update = function() {
                 self.update({
                     files: createTree2(files, null, self.getModel('q')),
+                    playlist: playlist.rows,
                 });
             };
 
             update();
 
+            self.on('playlist-click', function(event) {
+                event.preventDefault();
+                var url = '//localhost:5003' + event.currentTarget.getAttribute('href');
+                player.src = url;
+                player.play();
+            });
+
             self.on('filter', update);
+            playlist.on('change', update);
 
             self.on('play', function(event) {
                 event.preventDefault();
@@ -135,7 +146,7 @@
                 event.preventDefault();
                 var path = decodeURI(event.dataTransfer.getData('text')).slice(21);
                 xhr.getJSON('/info.json?path=' + encodeURIComponent(path)).then(function(info) {
-                    console.log(info);
+                    playlist.append(info);
                 });
             });
         });
@@ -182,6 +193,11 @@
             self.on('pause', function(event) {
                 event.preventDefault();
                 player.pause();
+            });
+            self.on('stop', function(event) {
+                event.preventDefault();
+                player.pause();
+                player.currentTime = 0;
             });
         });
 

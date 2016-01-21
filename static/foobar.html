@@ -24,13 +24,15 @@
 				<th>Duration</th>
 			</thead>
 			<tbody>
-				<tr>
+				{{#playlist}}
+				<tr href="{{path}}" data-ondblclick="playlist-click">
 					<td>{{playing}}</td>
-					<td>{{Artist}}</td>
-					<td>{{Title}}</td>
-					<td>{{Album}}</td>
-					<td>{{Duration}}</td>
+					<td>{{artist}}</td>
+					<td>{{title}}</td>
+					<td>{{album}}</td>
+					<td>{{duration}}</td>
 				</td>
+				{{/playlist}}
 			</tbody>
 		</table>
 	</div>
