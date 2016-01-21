@@ -19,6 +19,8 @@
             }
         });
 
+        var player = document.createElement('audio');
+
         registry.registerDirective('foobar', template, function(self) {
             var update = function() {
                 self.update({
@@ -27,6 +29,13 @@
             };
 
             update();
+
+            self.on('play', function(event) {
+                event.preventDefault();
+                var url = event.currentTarget.href;
+                player.src = url;
+                player.play();
+            });
         });
 
         registry.linkAll(document);
