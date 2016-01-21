@@ -94,6 +94,7 @@
         });
         registry.events.push('dragover');
         registry.events.push('drop');
+        registry.events.push('input');
 
         var player = document.createElement('audio');
 
