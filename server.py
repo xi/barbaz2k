@@ -20,37 +20,9 @@ def files_route(request):
     for dirpath, dirnames, filenames in os.walk(MUSIC_DIR, followlinks=True):
         for filename in filenames:
             if filename.split('.')[-1] in ['mp3', 'ogg', 'flac', 'm4a']:
-                paths.append(os.path.join(dirpath, filename))
+                paths.append(os.path.join(dirpath, filename)[len(MUSIC_DIR):])
 
-    tree = {
-        'dirs': [],
-        'files': [],
-    }
-
-    for path in sorted(paths):
-        parts = path[len(MUSIC_DIR)+1:].split('/')
-        head = tree
-
-        for part in parts[:-1]:
-            for item in head['dirs']:
-                if item['title'] == part:
-                    head = item
-                    break
-            else:
-                item = {
-                    'title': part,
-                    'dirs': [],
-                    'files': [],
-                }
-                head['dirs'].append(item)
-                head = item
-
-        head['files'].append({
-            'title': parts[-1],
-            'path': path[len(MUSIC_DIR):],
-        })
-
-    return jsonify(tree)
+    return jsonify(sorted(paths))
 
 
 def find_album_art(path):
@@ -67,7 +39,7 @@ def find_album_art(path):
 
 @app.route('/info.json')
 def info_route(request):
-    path = request.GET['path']
+    path = os.path.join(MUSIC_DIR, request.GET['path'][1:])
 
     metadata = mutagen.File(path, easy=True)
     get = lambda key: metadata.get(key, [None])[0]

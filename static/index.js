@@ -1,6 +1,40 @@
 (function(muu, xhr, Mustache, _) {
     'use strict';
 
+    var createTree = function(paths) {
+        var tree = {
+            dirs: [],
+            files: [],
+        };
+
+        _.forEach(paths, function(path) {
+            var parts = path.slice(1).split('/');
+            var head = tree;
+
+            _.forEach(parts.slice(0, -1), function(part) {
+                var item = _.find(head.dirs, function(i) {
+                    return i.title === part;
+                });
+                if (!item) {
+                    item = {
+                        title: part,
+                        dirs: [],
+                        files: [],
+                    }
+                    head.dirs.push(item)
+                }
+                head = item;
+            });
+
+            head.files.push({
+                title: parts[parts.length - 1],
+                path: path,
+            });
+        });
+
+        return tree;
+    };
+
     Promise.all([
         xhr.get('/static/foobar.html'),
         xhr.get('/static/filelist.html'),
@@ -26,7 +60,7 @@
         registry.registerDirective('foobar', template, function(self) {
             var update = function() {
                 self.update({
-                    files: files,
+                    files: createTree(files),
                 });
             };
 
