@@ -34,7 +34,7 @@
 
         self.play = function(i) {
             self.current = i;
-            player.src = '//localhost:5003' + self.rows[i].path;
+            player.src = '/proxy' + self.rows[i].path;
             player.play();
             self.dispatchEvent('change');
         };
@@ -47,7 +47,7 @@
 
         var updateStatus = function() {
             _.forEach(self.rows, function(row) {
-                if (row.path === decodeURI(player.src).slice(21)) {
+                if (row.path === decodeURI(player.src).slice(27)) {
                     row.playing = !player.paused;
                     row.paused = player.paused;
                 } else {
@@ -168,7 +168,7 @@
             });
             self.on('drop', function(event) {
                 event.preventDefault();
-                var path = decodeURI(event.dataTransfer.getData('text')).slice(21);
+                var path = decodeURI(event.dataTransfer.getData('text')).slice(27);
                 xhr.getJSON('/info.json?path=' + encodeURIComponent(path)).then(function(info) {
                     playlist.append(info);
                 });
