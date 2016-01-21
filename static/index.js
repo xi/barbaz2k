@@ -73,6 +73,16 @@
         return tree;
     };
 
+    var createTree2 = function(paths, expands, q) {
+        if (q) {
+            paths = _.filter(paths, function(p) {
+                return p.toLowerCase().match(q.toLowerCase());
+            });
+        }
+
+        return createTree(paths);
+    };
+
     Promise.all([
         xhr.get('/static/foobar.html'),
         xhr.get('/static/filelist.html'),
@@ -101,11 +111,13 @@
         registry.registerDirective('foobar', template, function(self) {
             var update = function() {
                 self.update({
-                    files: createTree(files),
+                    files: createTree2(files, null, self.getModel('q')),
                 });
             };
 
             update();
+
+            self.on('filter', update);
 
             self.on('play', function(event) {
                 event.preventDefault();

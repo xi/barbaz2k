@@ -5,7 +5,7 @@
 </div>
 
 <div class="file-browser">
-	<input type="search" />
+	<input type="search" name="q" data-onsearch="filter" data-onkeyup="filter" />
 	{{#files}}
 	<ul>
 	{{> filelist}}
