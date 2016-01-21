@@ -4,10 +4,12 @@
     Promise.all([
         xhr.get('/static/foobar.html'),
         xhr.get('/static/filelist.html'),
+        xhr.get('/static/buttons.html'),
         xhr.getJSON('/files.json'),
     ]).then(function(args) {
         var template = args[0];
-        var files = args[2];
+        var buttons = args[2]
+        var files = args[3];
 
         var partials = {
             filelist: args[1],
@@ -79,6 +81,19 @@
 
             self.on('click', function(event) {
                 player.volume = sliderValue(element, event);
+            });
+        });
+
+        registry.registerDirective('buttons', buttons, function(self) {
+            self.update({});
+
+            self.on('play', function(event) {
+                event.preventDefault();
+                player.play();
+            });
+            self.on('pause', function(event) {
+                event.preventDefault();
+                player.pause();
             });
         });
 
