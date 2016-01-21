@@ -58,8 +58,5 @@ def info_route(request):
         return jsonify(metadata)
 
 
-app.app.router.add_static('/proxy/', MUSIC_DIR)
-
-
 if __name__ == '__main__':
     app.run()
