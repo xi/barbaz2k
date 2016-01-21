@@ -132,7 +132,7 @@
             });
             self.on('drop', function(event) {
                 event.preventDefault();
-                var path = decodeURI(event.dataTransfer.getData('text')).slice(27);
+                var path = decodeURI(event.dataTransfer.getData('text')).slice(21);
                 xhr.getJSON('/info.json?path=' + encodeURIComponent(path)).then(function(info) {
                     console.log(info);
                 });
