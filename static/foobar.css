@@ -20,13 +20,13 @@ table {
 }
 .topbar {
   bottom: auto;
-  height: 1.5em;
+  height: 1.8em;
+  background: linear-gradient(to top, #E1E6F5, #D3DAED 60%, #FDFDFE);
 }
 .file-browser,
 .playlist {
-  top: 1.5em;
+  top: 1.8em;
   bottom: 1.5em;
-  overflow: auto;
 }
 .file-browser {
   right: auto;
@@ -35,6 +35,7 @@ table {
 .playlist {
   left: auto;
   width: 80%;
+  overflow: auto;
 }
 .statusbar {
   top: auto;
@@ -42,7 +43,8 @@ table {
 }
 html {
   color: black;
-  background: darkgrey;
+  background: #F0F0F0;
+  font-size: 14px;
 }
 .file-browser,
 .playlist {
@@ -52,16 +54,16 @@ html {
 .statusbar,
 .top {
   color: black;
-  background: lightgrey;
+  background: #FDFDFD;
 }
 .statusbar {
-  border-top: 1px solid blue;
+  border-top: 1px solid #878B93;
 }
 .top {
-  border-bottom: 1px solid blue;
+  border-bottom: 1px solid #878B93;
 }
 .file-browser {
-  border-right: 1px solid blue;
+  border-right: 1px solid #878B93;
 }
 .playback-buttons,
 .volume,
@@ -71,9 +73,11 @@ html {
 .volume,
 .seeker {
   height: 0.6em;
-  width: 20em;
-  background: lightgrey;
+  width: 100%;
+  background: #FDFDFD;
   box-shadow: 1px 1px 2px black inset;
+  position: relative;
+  top: -0.1em;
 }
 .volume {
   width: 5em;
@@ -90,15 +94,29 @@ html {
 }
 .playback-buttons a:focus,
 .playback-buttons a:hover {
-  border-color: blue;
+  border-color: #878B93;
+}
+.file-browser {
+  background: #FDFDFD;
+  color: black;
+  display: flex;
+  flex-direction: column;
+}
+.file-browser input {
+  width: 96%;
+  background: black;
+  color: white;
+  line-height: 2;
+  margin: 2%;
 }
 .file-browser ul {
   list-style: none;
   padding: 0;
-  white-space: nowrap;
+  margin: 0;
+  line-height: 1.3;
 }
 .file-browser ul ul {
-  border-left: 1px dotted white;
+  border-left: 1px dotted #E0E0E0;
   padding-left: 0.5em;
   margin-left: 0.5em;
 }
@@ -110,11 +128,36 @@ html {
   width: 11px;
   font-size: 9px;
   line-height: 9px;
-  border: 1px dotted white;
-  margin-left: 3px;
+  border: 1px dotted #E0E0E0;
+  margin-left: 1px;
+}
+.file-browser > ul {
+  flex: auto;
+  overflow: auto;
+  font-size: 12px;
+  background: black;
+  color: white;
+  white-space: nowrap;
+  padding: 0.5em;
 }
 .spectrum {
-  height: 1em;
+  height: 1.4em;
   width: 8em;
   background: black;
+}
+.topbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 0.5em;
+}
+.topbar .separator {
+  display: inline-block;
+  height: 1.8em;
+  margin: 0 0.5em;
+  border-left: 1px solid #878B93;
+  border-right: 1px solid #FDFDFE;
+}
+.topbar > *:last-child {
+  flex: auto;
 }

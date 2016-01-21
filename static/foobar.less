@@ -1,15 +1,16 @@
 // variables
 
-@bg1: darkgrey;
-@bg2: lightgrey;
+@bg1: #F0F0F0;
+@bg2: #FDFDFD;
 @bg3: black;
 @fg1: black;
 @fg2: black;
 @fg3: white;
-@border: blue;
+@border: #878B93;
+@lines: #E0E0E0;
 @shadow: black;
 
-@topbar-height: 1.5em;
+@topbar-height: 1.8em;
 @statusbar-height: 1.5em;
 
 // normalize
@@ -41,13 +42,13 @@ table {
 .topbar {
 	bottom: auto;
 	height: @topbar-height;
+	background: linear-gradient(to top, #E1E6F5, #D3DAED 60%, #FDFDFE);
 }
 
 .file-browser,
 .playlist {
 	top: @topbar-height;
 	bottom: @statusbar-height;
-	overflow: auto;
 }
 
 .file-browser {
@@ -58,6 +59,7 @@ table {
 .playlist {
 	left: auto;
 	width: 80%;
+	overflow: auto;
 }
 
 .statusbar {
@@ -70,6 +72,7 @@ table {
 html {
 	color: @fg1;
 	background: @bg1;
+	font-size: 14px;
 }
 
 .file-browser,
@@ -105,9 +108,11 @@ html {
 .volume,
 .seeker {
 	height: 0.6em;
-	width: 20em;
+	width: 100%;
 	background: @bg2;
 	box-shadow: 1px 1px 2px @shadow inset;
+	position: relative;
+	top: -0.1em;
 }
 
 .volume {
@@ -130,32 +135,79 @@ html {
 }
 
 
-.file-browser ul {
-	list-style: none;
-	padding: 0;
-	white-space: nowrap;
+.file-browser {
+	background: @bg2;
+	color: @fg2;
+	display: flex;
+	flex-direction: column;
 
-	ul {
-		border-left: 1px dotted white;
-		padding-left: 0.5em;
-		margin-left: 0.5em;
+	input {
+		width: 96%;
+		background: @bg3;
+		color: @fg3;
+		line-height: 2;
+		margin: 2%;
 	}
 
-	.expander {
-		display: inline-block;
-		vertical-align: middle;
-		text-align: center;
-		height: 11px;
-		width: 11px;
-		font-size: 9px;
-		line-height: 9px;
-		border: 1px dotted white;
-		margin-left: 3px;
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		line-height: 1.3;
+
+		ul {
+			border-left: 1px dotted @lines;
+			padding-left: 0.5em;
+			margin-left: 0.5em;
+		}
+
+		.expander {
+			display: inline-block;
+			vertical-align: middle;
+			text-align: center;
+			height: 11px;
+			width: 11px;
+			font-size: 9px;
+			line-height: 9px;
+			border: 1px dotted @lines;
+			margin-left: 1px;
+		}
+	}
+
+	> ul {
+		flex: auto;
+		overflow: auto;
+
+		font-size: 12px;
+		background: @bg3;
+		color: @fg3;
+		white-space: nowrap;
+
+		padding: 0.5em;
 	}
 }
 
 .spectrum {
-	height: 1em;
+	height: 1.4em;
 	width: 8em;
 	background: black;
+}
+
+.topbar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 0 0.5em;
+
+	.separator {
+		display: inline-block;
+		height: @topbar-height;
+		margin: 0 0.5em;
+		border-left: 1px solid @border;
+		border-right: 1px solid #FDFDFE;
+	}
+
+	> *:last-child {
+		flex: auto;
+	}
 }
