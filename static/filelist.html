@@ -8,5 +8,14 @@
 </li>
 {{/dirs}}
 {{#files}}
-<li><a data-onclick="play" data-onkeydown="keydown" href="/proxy{{path}}" tabindex="-1">{{title}}</a></li>
+<li
+	class="listitem {{#selected}}is-selected{{/selected}}"
+	data-href="/proxy{{path}}"
+	tabindex="-1"
+	draggable="true"
+	data-onclick="click"
+	data-ondblclick="activate"
+	data-onkeydown="keydown"
+	data-ondragstart="dragstart"
+>{{title}}</li>
 {{/files}}

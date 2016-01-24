@@ -75,14 +75,14 @@
         return s;
     };
 
-    var createTree = function(paths, expanded) {
+    var createTree = function(items, expanded) {
         var tree = {
             dirs: [],
             files: [],
         };
 
-        _.forEach(paths, function(path) {
-            var parts = path.slice(1).split('/');
+        _.forEach(items, function(item) {
+            var parts = item.path.slice(1).split('/');
             var head = tree;
 
             _.forEach(parts.slice(0, -1), function(part) {
@@ -101,35 +101,17 @@
                 head = item;
             });
 
-            head.files.push({
-                title: parts[parts.length - 1],
-                path: path,
-            });
+            head.files.push(item);
         });
 
         return tree;
-    };
-
-    var createTree2 = function(paths, expands, q) {
-        if (q) {
-            paths = _.filter(paths, function(p) {
-                return p.toLowerCase().match(q.toLowerCase());
-            });
-        }
-
-        return createTree(paths, q);
     };
 
     var linkListview = function(self, element, store) {
         // FIXME: generalize
         // FIXME: handle focus on enter/exit
 
-        var update = function() {
-            self.update({
-                items: store.items
-            });
-        };
-        update();
+        store.update();
 
         var initialShiftIndex = null;
 
@@ -158,6 +140,8 @@
             var newIndex = getKeyIndex(event);
 
             if (newIndex !== undefined) {
+                event.preventDefault();
+
                 newIndex = Math.min(store.items.length - 1, Math.max(0, newIndex));
 
                 if (event.ctrlKey) {
@@ -174,9 +158,10 @@
                     });
                 }
 
-                update();
+                store.update();
                 store.getElements()[newIndex].focus();
             } else if (event.keyCode === 32) {
+                event.preventDefault();
                 if (event.ctrlKey) {
                     store.items[index].selected = !store.items[index].selected;
                 } else {
@@ -184,10 +169,12 @@
                         item.selected = i === index;
                     });
                 }
-                update();
+                store.update();
             } else if (event.keyCode === 16) {
+                event.preventDefault();
                 initialShiftIndex = index;
             } else if (event.keyCode === 13) {
+                event.preventDefault();
                 var ev = muu.$.createEvent(
                     'muu-activate', undefined, undefined, event);
                 element.dispatchEvent(ev);
@@ -214,7 +201,7 @@
                 });
             }
 
-            update();
+            store.update();
         });
 
         self.on('dragstart', function(event) {
@@ -224,7 +211,7 @@
                     item.selected = i === index;
                 });
             }
-            update();
+            store.update();
 
             var selection = _.map(_.filter(store.items, 'selected'), 'path');
             event.dataTransfer.setData('text/plain', selection.join('\n'));
@@ -285,32 +272,13 @@
                 }
 
                 store.items = _items;
-                update();
+                store.update();
 
                 // FIXME: focus the element that was dragged
             });
 
             event.dataTransfer.clearData();
         });
-    };
-
-    var nextLeaf = function(node, dir, down) {
-        if (down) {
-            if (node.children.length !== 0) {
-                var index = dir === 1 ? 0 : node.children.length - 1;
-                return nextLeaf(node.children[index], dir, true);
-            } else {
-                return node;
-            }
-        } else {
-            var siblings = node.parentNode.children;
-            var index = _.indexOf(siblings, node) + dir;
-            if (0 <= index && index < siblings.length) {
-                return nextLeaf(siblings[index], dir, true);
-            } else {
-                return nextLeaf(node.parentNode, dir);
-            }
-        }
     };
 
     Promise.all([
@@ -346,92 +314,89 @@
         var player = document.createElement('audio');
         var playlist = new Playlist(player);
 
-        registry.registerDirective('foobar', template, function(self) {
-            var update = function() {
+        registry.registerDirective('foobar', template, function(self, element) {
+            // FIXME: items need to be sorted like tree (dirs first)
+            var items = _.map(files, function(path) {
+                return {
+                    title: _.last(path.split('/')),
+                    path: path,
+                };
+            });
+
+            var store = {
+                items: []
+            };
+            store.getElements = function() {
+                return self.querySelectorAll('.listitem');
+            };
+            store.update = function() {
+                var q = self.getModel('q', '').toLowerCase();
+                store.items = _.filter(items, function(item) {
+                    return item.path.toLowerCase().match(q);
+                });
                 self.update({
-                    files: createTree2(files, null, self.getModel('q')),
-                    playlist: playlist.rows,
+                    items: createTree(store.items, true),
                     art: (playlist.rows[playlist.current] || {}).art,
                 });
             };
 
-            update();
+            linkListview(self, element, store);
 
-            self.on('focusout', function(event) {
-                var root = event.currentTarget;
-                if (!muu.$.isDescendant(event.relatedTarget, root)) {
-                    // FIXME: do not manipulate DOM directly
-                    event.target.classList.add('focus-inactive');
-                    root.setAttribute('tabindex', '0');
-                }
-            });
-
-            self.on('focusin', function(event) {
-                var root = event.currentTarget;
-                if (!muu.$.isDescendant(event.relatedTarget, root)) {
-                    var el = root.querySelector('.focus-inactive');
-                    if (el) {
-                        el.classList.remove('focus-inactive');
-                    }
-                    if (event.target !== root) {
-                        el = event.target;
-                    }
-                    if (!el) {
-                        el = root.querySelector('a:not(.expander)');
-                    }
-                    el.focus();
-                    root.setAttribute('tabindex', '-1');
-                }
-            });
-
-            self.on('playlist-click', function(event) {
-                event.preventDefault();
-                var row = event.currentTarget;
-                var index = _.indexOf(row.parentNode.children, row);
-                playlist.play(index);
-            });
-
-            self.on('filter', update);
-            playlist.on('change', update);
-
-            self.on('play', function(event) {
+            self.on('activate', function(event) {
                 event.preventDefault();
                 var url = event.currentTarget.dataset.href;
                 player.src = url;
                 player.play();
             });
 
-            self.on('keydown', function(event) {
-                if (event.keyCode === 40) {
-                    event.preventDefault();
-                    var node = nextLeaf(event.currentTarget, 1);
-                    while (node.className === 'expander') {
-                        node = nextLeaf(node, 1);
-                    }
-                    node.focus();
-                } else if (event.keyCode === 38) {
-                    event.preventDefault();
-                    var node = nextLeaf(event.currentTarget, -1);
-                    while (node.className === 'expander') {
-                        node = nextLeaf(node, -1);
-                    }
-                    node.focus();
-                }
-            });
+            // self.on('focusout', function(event) {
+            //     var root = event.currentTarget;
+            //     if (!muu.$.isDescendant(event.relatedTarget, root)) {
+            //         // FIXME: do not manipulate DOM directly
+            //         event.target.classList.add('focus-inactive');
+            //         root.setAttribute('tabindex', '0');
+            //     }
+            // });
+            //
+            // self.on('focusin', function(event) {
+            //     var root = event.currentTarget;
+            //     if (!muu.$.isDescendant(event.relatedTarget, root)) {
+            //         var el = root.querySelector('.focus-inactive');
+            //         if (el) {
+            //             el.classList.remove('focus-inactive');
+            //         }
+            //         if (event.target !== root) {
+            //             el = event.target;
+            //         }
+            //         if (!el) {
+            //             el = root.querySelector('a:not(.expander)');
+            //         }
+            //         el.focus();
+            //         root.setAttribute('tabindex', '-1');
+            //     }
+            // });
+
+            self.on('filter', store.update);
         });
 
         registry.registerDirective('listview', listview, function(self, element) {
             var store = {
-                items: [],
-                getElements: function() {
-                    return self.querySelectorAll('.listitem');
-                },
-                uri2item: function(uri) {
-                    // FIXME: folder to list of items
-                    uri = uri.replace(/^https?:\/\/localhost:[0-9]*/, '');
-                    uri = uri.replace(/^\/proxy/, '');
-                    return xhr.getJSON('/info.json?path=' + uri);
-                },
+                items: []
+            };
+
+            store.getElements = function() {
+                return self.querySelectorAll('.listitem');
+            };
+            store.uri2item = function(uri) {
+                // FIXME: folder to list of items
+                uri = uri.replace(/^https?:\/\/localhost:[0-9]*/, '');
+                uri = uri.replace(/^\/proxy/, '');
+                return xhr.getJSON('/info.json?path=' + uri);
+            };
+            store.update = function() {
+                self.update({
+                    items: store.items
+                });
             };
 
             linkListview(self, element, store);
