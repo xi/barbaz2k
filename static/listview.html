@@ -1,0 +1,28 @@
+<table
+    class="listview"
+    tabindex="0"
+    data-onfocusin="focusin"
+    data-onfocusout="focusout"
+    data-ondragover="dragover"
+    data-ondrop="drop"
+>
+    <tbody>
+        {{#items}}
+        <tr
+            class="listitem {{#selected}}is-selected{{/selected}}"
+            data-href="/proxy{{path}}"
+            tabindex="-1"
+            draggable="true"
+            data-onclick="click"
+            data-ondblclick="activate"
+            data-onkeydown="keydown"
+            data-ondragstart="dragstart"
+        >
+            <td>{{playing}}</td>
+            <td>{{title}}</td>
+            <td>{{artist}}</td>
+            <td>{{duration}}</td>
+        </tr>
+        {{/items}}
+    </tbody>
+</table>

@@ -120,6 +120,180 @@
         return createTree(paths, q);
     };
 
+    var linkListview = function(self, element, store) {
+        // FIXME: generalize
+        // FIXME: handle focus on enter/exit
+
+        var update = function() {
+            self.update({
+                items: store.items
+            });
+        };
+        update();
+
+        var initialShiftIndex = null;
+
+        var getKeyIndex = function(event) {
+            var index = _.indexOf(store.getElements(), event.currentTarget);
+
+            if (event.keyCode === 40) {  // Down
+                return index + 1;
+            } else if (event.keyCode === 38) {  // Up
+                return index - 1
+            } else if (event.keyCode === 36) {  // Home
+                return 0
+            } else if (event.keyCode === 35) {  // End
+                return siblings.length - 1;
+            } else if (event.keyCode === 34) {  // PageDown
+                return index + 10;
+            } else if (event.keyCode === 33) {  // PageUp
+                return index - 10;
+            }
+        };
+
+        self.on('keydown', function(event) {
+            // FIXME: delete, ctrl-x, ctrl-c, ctrl-v
+
+            var index = _.indexOf(store.getElements(), event.currentTarget);
+            var newIndex = getKeyIndex(event);
+
+            if (newIndex !== undefined) {
+                newIndex = Math.min(store.items.length - 1, Math.max(0, newIndex));
+
+                if (event.ctrlKey) {
+                    // do not change selection
+                } else if (event.shiftKey) {
+                    var a = Math.min(newIndex, initialShiftIndex);
+                    var b = Math.max(newIndex, initialShiftIndex);
+                    _.forEach(store.items, function(item, i) {
+                        item.selected = a <= i && i <= b;
+                    });
+                } else {
+                    _.forEach(store.items, function(item, i) {
+                        item.selected = i === newIndex;
+                    });
+                }
+
+                update();
+                store.getElements()[newIndex].focus();
+            } else if (event.keyCode === 32) {
+                if (event.ctrlKey) {
+                    store.items[index].selected = !store.items[index].selected;
+                } else {
+                    _.forEach(store.items, function(item, i) {
+                        item.selected = i === index;
+                    });
+                }
+                update();
+            } else if (event.keyCode === 16) {
+                initialShiftIndex = index;
+            } else if (event.keyCode === 13) {
+                var ev = muu.$.createEvent(
+                    'muu-activate', undefined, undefined, event);
+                element.dispatchEvent(ev);
+            }
+        });
+
+        self.on('click', function(event) {
+            // FIXME: click outside of elements should deselect all
+            event.preventDefault();
+
+            var index = _.indexOf(store.getElements(), event.currentTarget);
+
+            if (event.shiftKey) {
+                var a = Math.min(index, initialShiftIndex);
+                var b = Math.max(index, initialShiftIndex);
+                _.forEach(store.items, function(item, i) {
+                    item.selected = a <= i && i <= b;
+                });
+            } else if (event.ctrlKey) {
+                store.items[index].selected = !store.items[index].selected;
+            } else {
+                _.forEach(store.items, function(item, i) {
+                    item.selected = i === index;
+                });
+            }
+
+            update();
+        });
+
+        self.on('dragstart', function(event) {
+            var index = _.indexOf(store.getElements(), event.currentTarget);
+            if (!store.items[index].selected) {
+                _.forEach(store.items, function(item, i) {
+                    item.selected = i === index;
+                });
+            }
+            update();
+
+            var selection = _.map(_.filter(store.items, 'selected'), 'path');
+            event.dataTransfer.setData('text/plain', selection.join('\n'));
+            event.dataTransfer.setData('text/uri-list', selection.join('\n'));
+            event.dataTransfer.effectAllowed = 'move';
+        });
+
+        var getDragIndex = function(event) {
+            var element = _.last(_.filter(store.getElements(), function(el) {
+                var rect = el.getBoundingClientRect()
+                return (rect.top + rect.bottom) / 2 < event.clientY;
+            }));
+
+            if (element) {
+                return _.indexOf(store.getElements(), element) + 1;
+            } else {
+                return 0;
+            }
+        };
+
+        self.on('dragover', function(event) {
+            event.preventDefault();
+            var elements = store.getElements();
+            var index = getDragIndex(event);
+
+            _.forEach(elements, function(el, i) {
+                if (i + 1 === index) {
+                    el.classList.add('drop-below');
+                } else {
+                    el.classList.remove('drop-below');
+                }
+                el.classList.remove('drop-above');
+            });
+            if (index === 0 && elements.length > 0) {
+                elements[0].classList.add('drop-above');
+            }
+        });
+
+        self.on('drop', function(event) {
+            event.preventDefault();
+            var index = getDragIndex(event);
+            var _items = [];
+
+            var uriList = event.dataTransfer.getData('text');
+            var dropEffect = event.dataTransfer.effectAllowed;  // HACK: dropEffect is not available in chrome
+
+            Promise.all(_.map(uriList.split('\n'), store.uri2item)).then(function(newItems) {
+                _.forEach(store.items, function(item, i) {
+                    if (i === index) {
+                        _items = _items.concat(newItems);
+                    }
+                    if (!item.selected || dropEffect !== 'move') {
+                        _items.push(item);
+                    }
+                });
+                if (store.items.length <= index) {
+                    _items = _items.concat(newItems);
+                }
+
+                store.items = _items;
+                update();
+
+                // FIXME: focus the element that was dragged
+            });
+
+            event.dataTransfer.clearData();
+        });
+    };
+
     var nextLeaf = function(node, dir, down) {
         if (down) {
             if (node.children.length !== 0) {
@@ -143,11 +317,13 @@
         xhr.get('/static/foobar.html'),
         xhr.get('/static/filelist.html'),
         xhr.get('/static/buttons.html'),
+        xhr.get('/static/listview.html'),
         xhr.getJSON('/files.json'),
     ]).then(function(args) {
         var template = args[0];
         var buttons = args[2]
-        var files = args[3];
+        var listview = args[3];
+        var files = args[4];
 
         var partials = {
             filelist: args[1],
@@ -158,6 +334,7 @@
                 return Mustache.render(a, b, partials);
             }
         });
+        registry.events.push('dragstart');
         registry.events.push('dragover');
         registry.events.push('drop');
         registry.events.push('input');
@@ -224,18 +401,6 @@
                 player.play();
             });
 
-            self.on('dragover', function(event) {
-                event.preventDefault();
-                event.dataTransfer.dropEffect = "copy";
-            });
-            self.on('drop', function(event) {
-                event.preventDefault();
-                var path = decodeURI(event.dataTransfer.getData('text')).slice(27);
-                xhr.getJSON('/info.json?path=' + encodeURIComponent(path)).then(function(info) {
-                    playlist.append(info);
-                });
-            });
-
             self.on('keydown', function(event) {
                 if (event.keyCode === 40) {
                     event.preventDefault();
@@ -252,6 +417,30 @@
                     }
                     node.focus();
                 }
+            });
+        });
+
+        registry.registerDirective('listview', listview, function(self, element) {
+            var store = {
+                items: [],
+                getElements: function() {
+                    return self.querySelectorAll('.listitem');
+                },
+                uri2item: function(uri) {
+                    // FIXME: folder to list of items
+                    uri = uri.replace(/^https?:\/\/localhost:[0-9]*/, '');
+                    uri = uri.replace(/^\/proxy/, '');
+                    return xhr.getJSON('/info.json?path=' + uri);
+                },
+            };
+
+            linkListview(self, element, store);
+
+            self.on('activate', function(event) {
+                event.preventDefault();
+                var url = event.currentTarget.dataset.href;
+                player.src = url;
+                player.play();
             });
         });
 

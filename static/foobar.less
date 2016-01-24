@@ -223,3 +223,24 @@ html {
 		background: @unfocus;
 	}
 }
+
+.listview {
+	display: block;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+.listitem {
+	&.is-selected {
+		background: @focus;
+	}
+
+	&.drop-above {
+		border-top: 2px solid @highlight;
+	}
+	&.drop-below {
+		border-bottom: 2px solid @highlight;
+	}
+}

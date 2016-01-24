@@ -170,3 +170,20 @@ html {
 .file-browser a.focus-inactive {
   background: #2A2A2A;
 }
+.listview {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.listitem.is-selected {
+  background: #595959;
+}
+.listitem.drop-above {
+  border-top: 2px solid #006FA5;
+}
+.listitem.drop-below {
+  border-bottom: 2px solid #006FA5;
+}

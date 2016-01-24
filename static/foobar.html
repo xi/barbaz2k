@@ -20,28 +20,8 @@
 	{{/art}}
 </div>
 
-<div class="playlist" data-ondragover="dragover" data-ondrop="drop" tabindex="0">
-	<table>
-		<thead>
-			<th>playing</th>
-			<th>Title</th>
-			<th>Artist</th>
-			<th>Duration</th>
-		</thead>
-		<tbody>
-			{{#playlist}}
-			<tr data-ondblclick="playlist-click">
-				<td>
-					{{#playing}}<i class="fa fa-play"></i>{{/playing}}
-					{{#paused}}<i class="fa fa-pause"></i>{{/paused}}
-				</td>
-				<td>{{title}}</td>
-				<td>{{artist}}</td>
-				<td>{{duration}}</td>
-			</td>
-			{{/playlist}}
-		</tbody>
-	</table>
+<div class="playlist" tabindex="0">
+	<muu type="listview"></muu>
 </div>
 
 <div class="statusbar">
