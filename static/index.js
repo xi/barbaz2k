@@ -369,7 +369,6 @@
         var playlist = new Playlist(player);
 
         registry.registerDirective('foobar', template, function(self, element) {
-            // FIXME: items need to be sorted like tree (dirs first)
             var tree = createTree(files);
 
             var store = {
