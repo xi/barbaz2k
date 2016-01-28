@@ -1,7 +1,7 @@
 {{#dirs}}
 <li>
-	<a class="expander" href="#" tabindex="-1">{{#expanded}}&ndash;{{/expanded}}{{^expanded}}+{{/expanded}}</a>
-	<a href="#" tabindex="-1" data-onkeydown="keydown">{{title}}</a>
+	<a data-onclick="toggle" class="expander" href="#" tabindex="-1">{{#expanded}}&ndash;{{/expanded}}{{^expanded}}+{{/expanded}}</a>
+	<span class="listitem {{#selected}}is-selected{{/selected}}" tabindex="-1" data-onkeydown="keydown">{{title}}</span>
 	{{#expanded}}
 	<ul>{{> filelist}}</ul>
 	{{/expanded}}

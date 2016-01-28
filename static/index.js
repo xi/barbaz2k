@@ -75,33 +75,87 @@
         return s;
     };
 
-    var createTree = function(items, expanded) {
-        var tree = {
-            dirs: [],
-            files: [],
+    var TreeNode = function(path) {
+        this.dirs = [];
+        this.files = [];
+
+        this.state = {
+            dir: true,
+            path: path,
+            title: _.last(path.split('/')),
+            expanded: path.match(/Beat/i),
+            selected: false,
         };
 
-        _.forEach(items, function(item) {
-            var parts = item.path.slice(1).split('/');
+        var match = function(path, q) {
+            return !q || path.toLowerCase().match(q);
+        };
+
+        this.include = function(q) {
+            return _.some(this.files, function(file) {
+                return match(file.path, q);
+            }) || _.some(this.dirs, function(dir) {
+                return dir.include(q);
+            });
+        };
+
+        this.getDirs = function(q) {
+            return _.filter(this.dirs, function(dir) {
+                return dir.include(q);
+            });
+        };
+
+        this.getFiles = function(q) {
+            return _.filter(this.files, function(file) {
+                return match(file.path, q);
+            });
+        };
+
+        this.asList = function(q) {
+            var list = [];
+            _.forEach(this.getDirs(q), function(dir) {
+                list.push(dir.state);
+                if (dir.state.expanded) {
+                    list = _.concat(list, dir.asList(q));
+                }
+            });
+            return _.concat(list, this.getFiles(q));
+        };
+
+        this.asTree = function(q) {
+            this.state.dirs =  _.map(this.getDirs(q), function(dir) {
+                return dir.asTree();
+            });
+            this.state.files = this.getFiles(q);
+            return this.state;
+        };
+    };
+
+    var createTree = function(files) {
+        var tree = new TreeNode('/');
+
+        _.forEach(files, function(path) {
+            var parts = path.slice(1).split('/');
             var head = tree;
+            var _parts = [];
 
             _.forEach(parts.slice(0, -1), function(part) {
+                _parts.push(part);
                 var item = _.find(head.dirs, function(i) {
-                    return i.title === part;
+                    return i.state.path === _parts.join('/');
                 });
                 if (!item) {
-                    item = {
-                        title: part,
-                        dirs: [],
-                        files: [],
-                        expanded: expanded,
-                    }
+                    item = new TreeNode(_parts.join('/'));
                     head.dirs.push(item)
                 }
                 head = item;
             });
 
-            head.files.push(item);
+            head.files.push({
+                path: path,
+                title: _.last(path.split('/')),
+                selected: false,
+            });
         });
 
         return tree;
@@ -316,12 +370,7 @@
 
         registry.registerDirective('foobar', template, function(self, element) {
             // FIXME: items need to be sorted like tree (dirs first)
-            var items = _.map(files, function(path) {
-                return {
-                    title: _.last(path.split('/')),
-                    path: path,
-                };
-            });
+            var tree = createTree(files);
 
             var store = {
                 items: []
@@ -331,11 +380,9 @@
             };
             store.update = function() {
                 var q = self.getModel('q', '').toLowerCase();
-                store.items = _.filter(items, function(item) {
-                    return item.path.toLowerCase().match(q);
-                });
+                store.items = tree.asList(q);
                 self.update({
-                    items: createTree(store.items, true),
+                    items: tree.asTree(q),
                     art: (playlist.rows[playlist.current] || {}).art,
                 });
             };
