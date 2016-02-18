@@ -226,6 +226,17 @@
                     art: (playlist.items[playlist.current] || {}).art,
                 });
             };
+            store.parentIndex = function(index) {
+                var item = store.items[index];
+                return _.findIndex(store.items, function(i) {
+                    return _.indexOf(i.dirs, item) !== -1 || _.indexOf(i.files, item) !== -1;
+                });
+            };
+            store.childIndex = function(index) {
+                var item = store.items[index];
+                var childItem = item.dirs[0] || item.files[0];
+                return _.indexOf(store.items, childItem);
+            };
 
             treeView(self, element, store);
 
@@ -249,43 +260,19 @@
             self.on('keydown', function(event) {
                 var index = _.indexOf(store.getElements(), event.currentTarget);
                 if (event.keyCode === 39) {  // Right
-                    event.preventDefault();
                     var item = store.items[index];
                     if (!item.expanded) {
+                        event.preventDefault();
                         item.expanded = true;
                         store.update();
-                    } else if (item.dir) {
-                        var childItem = item.dirs[0] || item.files[0];
-                        var newIndex = _.indexOf(store.items, childItem);
-                        if (newIndex !== -1) {
-                            _.forEach(store.items, function(item, i) {
-                                item.selected = i === newIndex;
-                            });
-
-                            store.update();
-                            store.getElements()[newIndex].focus();
-                        }
                     }
                 }
                 if (event.keyCode === 37) {  // Left
-                    event.preventDefault();
                     var item = store.items[index];
                     if (item.dir && item.expanded) {
+                        event.preventDefault();
                         item.expanded = false;
                         store.update();
-                    } else {
-                        var parentItem = _.find(store.items, function(i) {
-                            return _.indexOf(i.dirs, item) !== -1 || _.indexOf(i.files, item) !== -1;
-                        });
-                        var newIndex = _.indexOf(store.items, parentItem);
-                        if (newIndex !== -1) {
-                            _.forEach(store.items, function(item, i) {
-                                item.selected = i === newIndex;
-                            });
-
-                            store.update();
-                            store.getElements()[newIndex].focus();
-                        }
                     }
                 }
             });
