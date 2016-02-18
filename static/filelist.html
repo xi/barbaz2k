@@ -1,7 +1,17 @@
 {{#dirs}}
 <li>
-	<a data-onclick="toggle" class="expander" href="#" tabindex="-1">{{#expanded}}&ndash;{{/expanded}}{{^expanded}}+{{/expanded}}</a>
-	<span class="listitem {{#selected}}is-selected{{/selected}}" tabindex="-1" data-onkeydown="keydown">{{title}}</span>
+	<a
+		data-onclick="toggle"
+		class="expander"
+		href="#"
+		tabindex="-1"
+	>{{#expanded}}&ndash;{{/expanded}}{{^expanded}}+{{/expanded}}</a>
+	<span
+		class="listitem {{#selected}}is-selected{{/selected}}"
+		tabindex="-1"
+		data-onclick="click"
+		data-onkeydown="keydown"
+	>{{title}}</span>
 	{{#expanded}}
 	<ul>{{> filelist}}</ul>
 	{{/expanded}}
@@ -14,7 +24,7 @@
 	tabindex="-1"
 	draggable="true"
 	data-onclick="click"
-	data-ondblclick="activate"
+	data-ondblclick="dblclick"
 	data-onkeydown="keydown"
 	data-ondragstart="dragstart"
 >{{title}}</li>

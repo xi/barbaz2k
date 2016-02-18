@@ -11,7 +11,12 @@
 <div class="file-browser">
 	<input type="search" name="q" data-onsearch="filter" data-onkeyup="filter" />
 	{{#items}}
-	<ul tabindex="0" data-onfocusin="focusin" data-onfocusout="focusout">
+	<ul
+		{{^hasFocus}}tabindex="0"{{/hasFocus}}
+		data-onclick="click"
+		data-onfocusin="focusin"
+		data-onfocusout="focusout"
+	>
 		{{> filelist}}
 	</ul>
 	{{/items}}
@@ -20,7 +25,7 @@
 	{{/art}}
 </div>
 
-<div class="playlist" tabindex="0">
+<div class="playlist">
 	<muu type="listview"></muu>
 </div>
 

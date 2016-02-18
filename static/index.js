@@ -76,6 +76,7 @@
     };
 
     var TreeNode = function(path) {
+        // FIXME select=false on collapse
         this.dirs = [];
         this.files = [];
 
@@ -155,184 +156,11 @@
                 path: path,
                 title: _.last(path.split('/')),
                 selected: false,
+                focus: false,
             });
         });
 
         return tree;
-    };
-
-    var linkListview = function(self, element, store) {
-        // FIXME: generalize
-        // FIXME: handle focus on enter/exit
-
-        store.update();
-
-        var initialShiftIndex = null;
-
-        var getKeyIndex = function(event) {
-            var index = _.indexOf(store.getElements(), event.currentTarget);
-
-            if (event.keyCode === 40) {  // Down
-                return index + 1;
-            } else if (event.keyCode === 38) {  // Up
-                return index - 1
-            } else if (event.keyCode === 36) {  // Home
-                return 0
-            } else if (event.keyCode === 35) {  // End
-                return siblings.length - 1;
-            } else if (event.keyCode === 34) {  // PageDown
-                return index + 10;
-            } else if (event.keyCode === 33) {  // PageUp
-                return index - 10;
-            }
-        };
-
-        self.on('keydown', function(event) {
-            // FIXME: delete, ctrl-x, ctrl-c, ctrl-v
-
-            var index = _.indexOf(store.getElements(), event.currentTarget);
-            var newIndex = getKeyIndex(event);
-
-            if (newIndex !== undefined) {
-                event.preventDefault();
-
-                newIndex = Math.min(store.items.length - 1, Math.max(0, newIndex));
-
-                if (event.ctrlKey) {
-                    // do not change selection
-                } else if (event.shiftKey) {
-                    var a = Math.min(newIndex, initialShiftIndex);
-                    var b = Math.max(newIndex, initialShiftIndex);
-                    _.forEach(store.items, function(item, i) {
-                        item.selected = a <= i && i <= b;
-                    });
-                } else {
-                    _.forEach(store.items, function(item, i) {
-                        item.selected = i === newIndex;
-                    });
-                }
-
-                store.update();
-                store.getElements()[newIndex].focus();
-            } else if (event.keyCode === 32) {
-                event.preventDefault();
-                if (event.ctrlKey) {
-                    store.items[index].selected = !store.items[index].selected;
-                } else {
-                    _.forEach(store.items, function(item, i) {
-                        item.selected = i === index;
-                    });
-                }
-                store.update();
-            } else if (event.keyCode === 16) {
-                event.preventDefault();
-                initialShiftIndex = index;
-            } else if (event.keyCode === 13) {
-                event.preventDefault();
-                var ev = muu.$.createEvent(
-                    'muu-activate', undefined, undefined, event);
-                element.dispatchEvent(ev);
-            }
-        });
-
-        self.on('click', function(event) {
-            // FIXME: click outside of elements should deselect all
-            event.preventDefault();
-
-            var index = _.indexOf(store.getElements(), event.currentTarget);
-
-            if (event.shiftKey) {
-                var a = Math.min(index, initialShiftIndex);
-                var b = Math.max(index, initialShiftIndex);
-                _.forEach(store.items, function(item, i) {
-                    item.selected = a <= i && i <= b;
-                });
-            } else if (event.ctrlKey) {
-                store.items[index].selected = !store.items[index].selected;
-            } else {
-                _.forEach(store.items, function(item, i) {
-                    item.selected = i === index;
-                });
-            }
-
-            store.update();
-        });
-
-        self.on('dragstart', function(event) {
-            var index = _.indexOf(store.getElements(), event.currentTarget);
-            if (!store.items[index].selected) {
-                _.forEach(store.items, function(item, i) {
-                    item.selected = i === index;
-                });
-            }
-            store.update();
-
-            var selection = _.map(_.filter(store.items, 'selected'), 'path');
-            event.dataTransfer.setData('text/plain', selection.join('\n'));
-            event.dataTransfer.setData('text/uri-list', selection.join('\n'));
-            event.dataTransfer.effectAllowed = 'move';
-        });
-
-        var getDragIndex = function(event) {
-            var element = _.last(_.filter(store.getElements(), function(el) {
-                var rect = el.getBoundingClientRect()
-                return (rect.top + rect.bottom) / 2 < event.clientY;
-            }));
-
-            if (element) {
-                return _.indexOf(store.getElements(), element) + 1;
-            } else {
-                return 0;
-            }
-        };
-
-        self.on('dragover', function(event) {
-            event.preventDefault();
-            var elements = store.getElements();
-            var index = getDragIndex(event);
-
-            _.forEach(elements, function(el, i) {
-                if (i + 1 === index) {
-                    el.classList.add('drop-below');
-                } else {
-                    el.classList.remove('drop-below');
-                }
-                el.classList.remove('drop-above');
-            });
-            if (index === 0 && elements.length > 0) {
-                elements[0].classList.add('drop-above');
-            }
-        });
-
-        self.on('drop', function(event) {
-            event.preventDefault();
-            var index = getDragIndex(event);
-            var _items = [];
-
-            var uriList = event.dataTransfer.getData('text');
-            var dropEffect = event.dataTransfer.effectAllowed;  // HACK: dropEffect is not available in chrome
-
-            Promise.all(_.map(uriList.split('\n'), store.uri2item)).then(function(newItems) {
-                _.forEach(store.items, function(item, i) {
-                    if (i === index) {
-                        _items = _items.concat(newItems);
-                    }
-                    if (!item.selected || dropEffect !== 'move') {
-                        _items.push(item);
-                    }
-                });
-                if (store.items.length <= index) {
-                    _items = _items.concat(newItems);
-                }
-
-                store.items = _items;
-                store.update();
-
-                // FIXME: focus the element that was dragged
-            });
-
-            event.dataTransfer.clearData();
-        });
     };
 
     Promise.all([
@@ -372,7 +200,8 @@
             var tree = createTree(files);
 
             var store = {
-                items: []
+                items: [],
+                hasFocus: false,
             };
             store.getElements = function() {
                 return self.querySelectorAll('.listitem');
@@ -382,11 +211,12 @@
                 store.items = tree.asList(q);
                 self.update({
                     items: tree.asTree(q),
+                    hasFocus: store.hasFocus,
                     art: (playlist.rows[playlist.current] || {}).art,
                 });
             };
 
-            linkListview(self, element, store);
+            treeView(self, element, store);
 
             self.on('activate', function(event) {
                 event.preventDefault();
@@ -394,33 +224,6 @@
                 player.src = url;
                 player.play();
             });
-
-            // self.on('focusout', function(event) {
-            //     var root = event.currentTarget;
-            //     if (!muu.$.isDescendant(event.relatedTarget, root)) {
-            //         // FIXME: do not manipulate DOM directly
-            //         event.target.classList.add('focus-inactive');
-            //         root.setAttribute('tabindex', '0');
-            //     }
-            // });
-            //
-            // self.on('focusin', function(event) {
-            //     var root = event.currentTarget;
-            //     if (!muu.$.isDescendant(event.relatedTarget, root)) {
-            //         var el = root.querySelector('.focus-inactive');
-            //         if (el) {
-            //             el.classList.remove('focus-inactive');
-            //         }
-            //         if (event.target !== root) {
-            //             el = event.target;
-            //         }
-            //         if (!el) {
-            //             el = root.querySelector('a:not(.expander)');
-            //         }
-            //         el.focus();
-            //         root.setAttribute('tabindex', '-1');
-            //     }
-            // });
 
             self.on('filter', store.update);
 
@@ -497,7 +300,7 @@
                 });
             };
 
-            linkListview(self, element, store);
+            treeView(self, element, playlist);
 
             self.on('activate', function(event) {
                 event.preventDefault();
