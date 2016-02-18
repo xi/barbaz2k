@@ -4,7 +4,7 @@
     var Playlist = function(player) {
         var self = this;
 
-        self.rows = [];
+        self.items = [];
         self.element = document.createElement('div');
         self.current = 0;
 
@@ -18,27 +18,38 @@
         };
 
         self.getTotalTime = function() {
-            return _.sum(_.map(self.rows, 'duration_raw')) || 0;
+            return _.sum(_.map(self.items, 'duration_raw')) || 0;
         };
 
         self.clear = function() {
-            self.rows = [];
+            self.items = [];
             self.dispatchEvent('clear');
             self.dispatchEvent('change');
             player.src= null;
         };
         self.append = function(item) {
-            self.rows.push(item);
+            self.items.push(item);
             self.dispatchEvent('change');
         };
         self.delete = function(index) {
-            self.rows.splice(index, 1);
+            self.items.splice(index, 1);
             self.dispatchEvent('change');
+        };
+
+        self.uri2item = function(uri) {
+            // FIXME: folder to list of items
+            uri = uri.replace(/^https?:\/\/localhost:[0-9]*/, '');
+            uri = uri.replace(/^\/proxy/, '');
+            return xhr.getJSON('/info.json?path=' + uri);
+        };
+
+        self.appendUri = function(uri) {
+            return self.uri2item(uri).then(self.append);
         };
 
         self.play = function(i) {
             self.current = i;
-            player.src = '/proxy' + self.rows[i].path;
+            player.src = '/proxy' + self.items[i].path;
             player.play();
             self.dispatchEvent('change');
         };
@@ -50,7 +61,7 @@
         };
 
         var updateStatus = function() {
-            _.forEach(self.rows, function(row) {
+            _.forEach(self.items, function(row) {
                 if (row.path === decodeURI(player.src).slice(27)) {
                     row.playing = !player.paused;
                     row.paused = player.paused;
@@ -212,7 +223,7 @@
                 self.update({
                     items: tree.asTree(q),
                     hasFocus: store.hasFocus,
-                    art: (playlist.rows[playlist.current] || {}).art,
+                    art: (playlist.items[playlist.current] || {}).art,
                 });
             };
 
@@ -281,24 +292,17 @@
         });
 
         registry.registerDirective('listview', listview, function(self, element) {
-            var store = {
-                items: []
-            };
-
-            store.getElements = function() {
+            playlist.getElements = function() {
                 return self.querySelectorAll('.listitem');
             };
-            store.uri2item = function(uri) {
-                // FIXME: folder to list of items
-                uri = uri.replace(/^https?:\/\/localhost:[0-9]*/, '');
-                uri = uri.replace(/^\/proxy/, '');
-                return xhr.getJSON('/info.json?path=' + uri);
-            };
-            store.update = function() {
+            playlist.update = function() {
                 self.update({
-                    items: store.items
+                    items: playlist.items,
+                    hasFocus: playlist.hasFocus,
                 });
             };
+
+            playlist.on('change', playlist.update);
 
             treeView(self, element, playlist);
 
