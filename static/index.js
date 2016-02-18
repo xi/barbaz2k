@@ -61,8 +61,8 @@
         };
 
         var updateStatus = function() {
-            _.forEach(self.items, function(row) {
-                if (row.path === decodeURI(player.src).slice(27)) {
+            _.forEach(self.items, function(row, i) {
+                if (i === self.current) {
                     row.playing = !player.paused;
                     row.paused = player.paused;
                 } else {
