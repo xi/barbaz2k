@@ -243,8 +243,12 @@
             self.on('activate', function(event) {
                 event.preventDefault();
                 var url = event.currentTarget.dataset.href;
-                player.src = url;
-                player.play();
+                if (event.ctrlKey) {
+                    playlist.appendUri(url);
+                } else {
+                    player.src = url;
+                    player.play();
+                }
             });
 
             self.on('filter', store.update);
