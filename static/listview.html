@@ -18,7 +18,7 @@
             data-onkeydown="keydown"
             data-ondragstart="dragstart"
         >
-            <td>{{playing}}</td>
+            <td>{{#playing}}<i class="fa fa-play"></i>{{/playing}}{{#paused}}<i class="fa fa-pause"></i>{{/paused}}</td>
             <td>{{title}}</td>
             <td>{{artist}}</td>
             <td>{{duration}}</td>
