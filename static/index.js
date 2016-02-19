@@ -236,6 +236,8 @@
 
         var player = document.createElement('audio');
         var playlist = new Playlist(player);
+        window.player = player;
+        window.playlist = playlist;
 
         registry.registerDirective('foobar', template, function(self, element) {
             var tree = createTree(files);
