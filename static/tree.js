@@ -92,6 +92,13 @@ TreeStore.prototype.canDrop = function(dragDropData) {
     return false;
 };
 
+TreeStore.prototype.setFocus = function(position) {
+    _.forEach(this.items, function(item, p) {
+        item.focus = p === position;
+    });
+    this.getElements()[position].focus();
+};
+
 
 var treeView = function(self, element, store) {
     store.update();
@@ -155,12 +162,8 @@ var treeView = function(self, element, store) {
                 });
             }
 
-            _.forEach(store.items, function(item, i) {
-                item.focus = i == newIndex;
-            });
-
             store.update();
-            store.getElements()[newIndex].focus();
+            store.setFocus(newIndex);
         } else if (event.keyCode === 32) {
             event.preventDefault();
             if (event.ctrlKey) {
@@ -222,9 +225,7 @@ var treeView = function(self, element, store) {
                 });
             }
 
-            _.forEach(store.items, function(item, i) {
-                item.focus = i == index;
-            });
+            store.setFocus(index);
         }
 
         store.update();
@@ -254,10 +255,7 @@ var treeView = function(self, element, store) {
             }
 
             if (index < elements.length) {
-                elements[index].focus();
-                _.forEach(store.items, function(item, i) {
-                    item.focus = i == index;
-                });
+                store.setFocus(index);
             }
 
             store.hasFocus = true;
