@@ -1,5 +1,5 @@
 {{#dirs}}
-<li class="treeview-node">
+<li>
 	<a
 		data-onclick="toggle"
 		class="expander"
@@ -19,7 +19,7 @@
 {{/dirs}}
 {{#files}}
 <li
-	class="treeview-leaf listitem {{#selected}}is-selected{{/selected}}"
+	class="listitem {{#selected}}is-selected{{/selected}}"
 	data-href="/proxy{{path}}"
 	tabindex="-1"
 	draggable="true"
