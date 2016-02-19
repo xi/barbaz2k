@@ -33,7 +33,6 @@
  */
 
 // FIXME: use one store with more than one view
-// FIXME: cleanup position/index
 
 var TreeStore = function() {};
 
@@ -41,19 +40,19 @@ TreeStore.prototype.clear = function() {
     this.items = [];
 };
 
-TreeStore.prototype.insertBefore = function(items, position) {
-    this.items.splice.apply(this.items, [position, 0].concat(items));
+TreeStore.prototype.insertBefore = function(items, index) {
+    this.items.splice.apply(this.items, [index, 0].concat(items));
 };
 
-TreeStore.prototype.insertAfter = function(items, position) {
-    this.insertBefore(items, position + 1);
+TreeStore.prototype.insertAfter = function(items, index) {
+    this.insertBefore(items, index + 1);
 };
 
 TreeStore.prototype.append = function(items) {
     this.insertAfter(items, this.items.length - 1);
 };
 
-TreeStore.prototype.remove = function(positions) {
+TreeStore.prototype.remove = function(indices) {
     var pop = function(arr, i) {
         return arr.splice(i, 1)[0];
     };
@@ -61,24 +60,24 @@ TreeStore.prototype.remove = function(positions) {
     var done = [];
     var removed = [];
 
-    for (var i = 0; i < positions.length; i++) {
-        var position = positions[i];
-        position -= done.filter((p) => p < position).length;
-        removed.push(pop(this.items, position))
-        done.push(positions[i]);
+    for (var i = 0; i < indices.length; i++) {
+        var index = indices[i];
+        index -= done.filter((p) => p < index).length;
+        removed.push(pop(this.items, index))
+        done.push(indices[i]);
     }
 
     return removed;
 };
 
-TreeStore.prototype.moveBefore = function(positions, position) {
-    var items = this.remove(positions);
-    position -= _.filter(positions, (p) => p < position).length;
-    this.insertBefore(items, position);
+TreeStore.prototype.moveBefore = function(indices, index) {
+    var items = this.remove(indices);
+    index -= _.filter(indices, (i) => i < index).length;
+    this.insertBefore(items, index);
 };
 
-TreeStore.prototype.moveAfter = function(positions, position) {
-    this.moveBefore(positions, position + 1);
+TreeStore.prototype.moveAfter = function(indices, index) {
+    this.moveBefore(indices, index + 1);
 };
 
 TreeStore.prototype.parentIndex = function(index) {
@@ -99,18 +98,18 @@ TreeStore.prototype.drag = function(index) {
 
 TreeStore.prototype.drop = function(data, index) {};
 
-TreeStore.prototype.setFocus = function(position) {
-    _.forEach(this.items, function(item, p) {
-        item.focus = p === position;
+TreeStore.prototype.setFocus = function(index) {
+    _.forEach(this.items, function(item, i) {
+        item.focus = i === index;
     });
-    this.getElements()[position].focus();
+    this.getElements()[index].focus();
 };
 
 TreeStore.prototype.getSelection = function() {
     var selection = [];
-    _.forEach(this.items, function(item, i) {
+    _.forEach(this.items, function(item, index) {
         if (item.selected) {
-            selection.push(i);
+            selection.push(index);
         }
     });
     return selection;

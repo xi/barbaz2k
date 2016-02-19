@@ -29,16 +29,16 @@
             player.src = null;
         };
 
-        self.insertBefore = function(items, position) {
+        self.insertBefore = function(items, index) {
             // FIXME calculate self.current if it is moved itself
-            if (position <= self.current) {
+            if (index <= self.current) {
                 self.current += items.length;
             }
-            self.items.splice.apply(self.items, [position, 0].concat(items));
+            self.items.splice.apply(self.items, [index, 0].concat(items));
             self.dispatchEvent('change');
         };
 
-        self.remove = function(positions) {
+        self.remove = function(indices) {
             var pop = function(arr, i) {
                 return arr.splice(i, 1)[0];
             };
@@ -46,13 +46,13 @@
             var done = [];
             var removed = [];
 
-            for (var i = 0; i < positions.length; i++) {
-                var position = positions[i];
-                position -= _.filter(done, (p) => p < position).length;
-                removed.push(pop(self.items, position))
-                done.push(positions[i]);
+            for (var i = 0; i < indices.length; i++) {
+                var index = indices[i];
+                index -= _.filter(done, (i) => i < index).length;
+                removed.push(pop(self.items, index))
+                done.push(indices[i]);
             }
-            self.current -= _.filter(done, (p) => p < self.current).length;
+            self.current -= _.filter(done, (i) => i < self.current).length;
 
             self.dispatchEvent('change');
             return removed;
@@ -83,8 +83,8 @@
             });
         };
 
-        self.insertUriBefore = function(uris, position) {
-            self.insertBefore(self.uris2items(uris), position);
+        self.insertUriBefore = function(uris, index) {
+            self.insertBefore(self.uris2items(uris), index);
         };
 
         self.appendUri = function(uris) {
