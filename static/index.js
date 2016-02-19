@@ -156,9 +156,9 @@
 
     var formatTime = function(duration) {
         var s = '';
-        s += Math.round(duration / 60) || 0;
+        s += Math.floor(duration / 60) || 0;
         s += ':'
-        s += ('00' + Math.round(duration) % 60).slice(-2);
+        s += ('00' + Math.floor(duration) % 60).slice(-2);
         return s;
     };
 
