@@ -240,35 +240,36 @@
         window.playlist = playlist;
 
         registry.registerDirective('foobar', template, function(self, element) {
-            var tree = createTree(files);
-
-            var store = {
-                items: [],
-                hasFocus: false,
+            var FileStore = function(files) {
+                this.items = [];
+                this.hasFocus = false;
+                this.tree = createTree(files);
             };
-            store.getElements = function() {
+            FileStore.prototype = new TreeStore();
+            FileStore.prototype.getElements = function() {
                 return self.querySelectorAll('.listitem');
             };
-            store.update = function() {
+            FileStore.prototype.update = function() {
                 var q = self.getModel('q', '').toLowerCase();
-                store.items = tree.asList(q);
+                this.items = this.tree.asList(q);
                 self.update({
-                    items: tree.asTree(q),
-                    hasFocus: store.hasFocus,
+                    items: this.tree.asTree(q),
+                    hasFocus: this.hasFocus,
                     art: (playlist.items[playlist.current] || {}).art,
                 });
             };
-            store.parentIndex = function(index) {
-                var item = store.items[index];
-                return _.findIndex(store.items, function(i) {
+            FileStore.prototype.parentIndex = function(index) {
+                var item = this.items[index];
+                return _.findIndex(this.items, function(i) {
                     return _.indexOf(i.dirs, item) !== -1 || _.indexOf(i.files, item) !== -1;
                 });
             };
-            store.childIndex = function(index) {
-                var item = store.items[index];
+            FileStore.prototype.childIndex = function(index) {
+                var item = this.items[index];
                 var childItem = item.dirs[0] || item.files[0];
-                return _.indexOf(store.items, childItem);
+                return _.indexOf(this.items, childItem);
             };
+            var store = new FileStore(files);
 
             self.on('activate', function(event) {
                 event.preventDefault();
