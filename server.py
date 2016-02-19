@@ -1,4 +1,5 @@
 import os
+import re
 
 from fakes import Fakes, jsonify
 import mutagen
@@ -7,6 +8,12 @@ import audioread
 MUSIC_DIR = os.path.expanduser('~/Musik')
 
 app = Fakes(__name__)
+
+
+def human_key(s):
+    # https://stackoverflow.com/questions/4836710/#answer-16090640
+    parts = re.split('(\d+)', s)
+    return [int(t) if t.isnumeric() else t.lower() for t in parts]
 
 
 @app.route('/')
@@ -23,7 +30,7 @@ def files_route(request):
             if filename.split('.')[-1] in ['mp3', 'ogg', 'flac', 'm4a']:
                 paths.append(os.path.join(dirpath, filename)[len(MUSIC_DIR):])
 
-    return jsonify(sorted(paths))
+    return jsonify(sorted(paths, key=human_key))
 
 
 def find_album_art(path):
