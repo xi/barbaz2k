@@ -323,6 +323,9 @@
             };
             var store = new FileStore(files);
 
+            // for updating cover art
+            muu.$.on(player, 'play', () => store.update());
+
             self.on('activate', function(event) {
                 event.preventDefault();
                 var url = event.currentTarget.dataset.href;
