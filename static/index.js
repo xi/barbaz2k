@@ -197,7 +197,7 @@
 
         this.asTree = function(q) {
             this.state.dirs =  _.map(this.getDirs(q), function(dir) {
-                return dir.asTree();
+                return dir.asTree(q);
             });
             this.state.files = this.getFiles(q);
             return this.state;
