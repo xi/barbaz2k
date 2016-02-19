@@ -62,7 +62,7 @@
             // FIXME: folder to list of items
             uri = uri.replace(/^https?:\/\/localhost:[0-9]*/, '');
             uri = uri.replace(/^\/proxy/, '');
-            return xhr.getJSON('/info.json?path=' + uri);
+            return xhr.getJSON('/info.json?path=' + encodeURIComponent(uri));
         };
 
         self.insertUriBefore = function(uris, position) {
