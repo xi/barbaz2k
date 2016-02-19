@@ -334,9 +334,8 @@
 
             self.on('activate', function(event) {
                 event.preventDefault();
-                var url = event.currentTarget.dataset.href;
-                player.src = url;
-                player.play();
+                var index = _.indexOf(playlist.getElements(), event.currentTarget);
+                playlist.play(index);
             });
         });
 
