@@ -1,7 +1,7 @@
 (function(muu, xhr, Mustache, _) {
     'use strict';
 
-    var Playlist = function(player) {
+    var Playlist = function(player, files) {
         var self = this;
 
         self.items = [];
@@ -58,25 +58,37 @@
             return removed;
         };
 
-        self.uri2item = function(uri) {
-            // FIXME: folder to list of items
-            uri = uri.replace(/^https?:\/\/localhost:[0-9]*/, '');
-            uri = uri.replace(/^\/proxy/, '');
-            return xhr.getJSON('/info.json?path=' + encodeURIComponent(uri));
+        self.expandUris = function(uris) {
+            return _.flatten(_.map(uris, function(uri) {
+                return _.filter(files, function(file) {
+                    return _.startsWith(file, uri);
+                });
+            }));
+        };
+
+        self.uris2items = function(uris) {
+            return _.map(self.expandUris(uris), function(uri) {
+                var item = {
+                    path: uri,
+                    title: _.last(uri.split('/')),
+                };
+
+                var _uri = '/info.json?path=' + encodeURIComponent(uri);
+                xhr.getJSON(_uri).then(function(data) {
+                    _.assign(item, data);
+                    self.update();
+                });
+
+                return item;
+            });
         };
 
         self.insertUriBefore = function(uris, position) {
-            var promises = _.map(uris, self.uri2item);
-            return Promise.all(promises).then(function(items) {
-                self.insertBefore(items, position);
-            });
+            self.insertBefore(self.uris2items(uris), position);
         };
 
         self.appendUri = function(uris) {
-            var promises = _.map(uris, self.uri2item);
-            return Promise.all(promises).then(function(items) {
-                self.append(items);
-            });
+            self.append(self.uris2items(uris));
         };
 
         self.play = function(i) {
@@ -270,7 +282,7 @@
         registry.events.push('focusout');
 
         var player = document.createElement('audio');
-        var playlist = new Playlist(player);
+        var playlist = new Playlist(player, files);
         window.player = player;
         window.playlist = playlist;
 
@@ -308,7 +320,7 @@
                 var selection = this.getSelection();
                 return {
                     origin: 'filelist',
-                    uris: _.map(selection, (i) => '/proxy' + this.items[i].path),
+                    uris: _.map(selection, (i) => this.items[i].path),
                 };
             };
             var store = new FileStore(files);
@@ -320,14 +332,13 @@
                 event.preventDefault();
                 if (event.ctrlKey) {
                     var selection = store.getSelection();
-                    var elements = store.getElements();
                     var uris = _.map(selection, function(index) {
-                        return elements[index].dataset.href;
+                        return store.items[index].path;
                     });
                     playlist.appendUri(uris);
                 } else {
-                    var uri = event.currentTarget.dataset.href;
-                    player.src = uri;
+                    var index = _.indexOf(store.getElements(), event.currentTarget);
+                    player.src = '/proxy' + store.items[index].path;
                     player.play();
                 }
             });
