@@ -72,8 +72,11 @@
             });
         };
 
-        self.appendUri = function(uri) {
-            return self.uri2item(uri).then((i) => self.append([i]));
+        self.appendUri = function(uris) {
+            var promises = _.map(uris, self.uri2item);
+            return Promise.all(promises).then(function(items) {
+                self.append(items);
+            });
         };
 
         self.play = function(i) {
@@ -315,11 +318,16 @@
 
             self.on('activate', function(event) {
                 event.preventDefault();
-                var url = event.currentTarget.dataset.href;
                 if (event.ctrlKey) {
-                    playlist.appendUri(url);
+                    var selection = store.getSelection();
+                    var elements = store.getElements();
+                    var uris = _.map(selection, function(index) {
+                        return elements[index].dataset.href;
+                    });
+                    playlist.appendUri(uris);
                 } else {
-                    player.src = url;
+                    var uri = event.currentTarget.dataset.href;
+                    player.src = uri;
                     player.play();
                 }
             });
