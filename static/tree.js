@@ -121,6 +121,7 @@ var treeView = function(self, element, store) {
     store.update();
 
     var initialShiftIndex = null;
+    var clipboard = null;
 
     var getKeyIndex = function(event) {
         var index = _.indexOf(store.getElements(), event.currentTarget);
@@ -199,6 +200,34 @@ var treeView = function(self, element, store) {
             var ev = muu.$.createEvent(
                 'muu-activate', undefined, undefined, event);
             element.dispatchEvent(ev);
+        } else if (event.keyCode === 46) {  // delete
+            event.preventDefault();
+            store.remove(store.getSelection());
+            store.update();
+        } else if (event.keyCode == 88 && event.ctrlKey) {  // ctrl-x
+            event.preventDefault();
+            clipboard = store.remove(store.getSelection());
+            _.forEach(clipboard, function(item) {
+                item.focus = false;
+                item.selected = false;
+            });
+        } else if (event.keyCode == 67 && event.ctrlKey) {  // ctrl-c
+            event.preventDefault();
+            clipboard = _.map(store.getSelection(), (i) => store.items[i]);
+            _.forEach(clipboard, function(item) {
+                item.focus = false;
+                item.selected = false;
+            });
+        } else if (event.keyCode == 86 && event.ctrlKey) {  // ctrl-v
+            event.preventDefault();
+            if (clipboard) {
+                store.insertAfter(_.map(clipboard, (i) => _.clone(i)), index);
+            }
+        } else if (event.keyCode == 65 && event.ctrlKey) {  // ctrl-a
+            _.forEach(store.items, function(item) {
+                item.selected = true;
+            });
+            store.update();
         }
     });
 
