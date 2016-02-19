@@ -89,6 +89,44 @@
             self.play(self.current - 1);
         };
 
+        self.drag = function(index) {
+            var selection = [];
+            _.forEach(self.items, function(item, i) {
+                if (item.selected) {
+                    selection.push(i);
+                }
+            });
+
+            return {
+                origin: 'playlist',
+                focus: index,
+                selection: selection,
+            };
+        };
+
+        self.canDrop = function(data) {
+            if (data.origin === 'playlist') {
+                return true;
+            } else if (data.origin === 'filelist') {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        self.drop = function(data, index) {
+            if (data.origin === 'playlist') {
+                self.moveBefore(data.selection, index);
+                self.update();
+                // FIXME: index has changed in moveBefore
+                self.setFocus(data.index);
+            } else if (data.origin === 'filelist') {
+                self.insertUriBefore(data.uris, index);
+                self.update();
+                // FIXME: set focus
+            }
+        };
+
         var updateStatus = function() {
             _.forEach(self.items, function(row, i) {
                 if (i === self.current) {
@@ -269,6 +307,19 @@
                 var childItem = item.dirs[0] || item.files[0];
                 return _.indexOf(this.items, childItem);
             };
+            FileStore.prototype.drag = function(index) {
+                var selection = [];
+                _.forEach(this.items, function(item, i) {
+                    if (item.selected) {
+                        selection.push(i);
+                    }
+                });
+
+                return {
+                    origin: 'filelist',
+                    uris: _.map(selection, (i) => '/proxy' + this.items[i].path),
+                };
+            };
             var store = new FileStore(files);
 
             self.on('activate', function(event) {
@@ -326,9 +377,6 @@
                     items: playlist.items,
                     hasFocus: playlist.hasFocus,
                 });
-            };
-            playlist.canDrop = function() {
-                return true;
             };
 
             playlist.on('change', playlist.update);

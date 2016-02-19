@@ -89,9 +89,15 @@ TreeStore.prototype.childIndex = function(index) {
     return -1;
 };
 
-TreeStore.prototype.canDrop = function(dragDropData) {
+TreeStore.prototype.canDrop = function(data) {
     return false;
 };
+
+TreeStore.prototype.drag = function(index) {
+    return null;
+};
+
+TreeStore.prototype.drop = function(data, index) {};
 
 TreeStore.prototype.setFocus = function(position) {
     _.forEach(this.items, function(item, p) {
@@ -279,19 +285,10 @@ var treeView = function(self, element, store) {
             _.forEach(store.items, function(item, i) {
                 item.selected = i === index;
             });
+            store.update();
         }
-        store.update();
 
-        var selection = _.reduce(store.items, function(result, item, i) {
-            if (item.selected) {
-                result.push(i);
-            }
-            return result;
-        }, []);
-        window.dragDropData = {
-            action: 'move',
-            items: selection,
-        };
+        window.dragDropData = store.drag(index);
     });
 
     var getDragIndex = function(event) {
@@ -330,17 +327,9 @@ var treeView = function(self, element, store) {
     self.on('drop', function(event) {
         if (store.canDrop(window.dragDropData)) {
             event.preventDefault();
-
             var index = getDragIndex(event);
-            var data = window.dragDropData;
-
-            if (data.action = 'move') {
-                store.moveBefore(data.items, index);
-            } else {
-                store.insertBefore(data.items, index);
-            }
-
-            store.update();
+            store.drop(window.dragDropData, index);
+            window.dragDropData = null;
         }
     });
 
