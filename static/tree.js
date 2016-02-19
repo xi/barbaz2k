@@ -20,6 +20,16 @@
  *
  * - drag
  * - drop
+ *
+ * # drag/drop
+ *
+ * circumvent browser apis, use shared data object instead
+ * dragDropData should contain some information for the drop target on how to
+ * use this data
+ *
+ * - store.canDrop - can this kind of data be dropped in this treeView?
+ * - store.setupData(indices) : any - return value is saved in dragDropData
+ * - onDrop(dragDropData : any) - execute action based on dragDropData
  */
 
 // FIXME: use one store with more than one view
@@ -68,6 +78,10 @@ TreeStore.prototype.moveBefore = function(positions, position) {
 
 TreeStore.prototype.moveAfter = function(positions, position) {
     this.moveBefore(positions, position + 1);
+};
+
+TreeStore.prototype.canDrop = function(dragDropData) {
+    return false;
 };
 
 
@@ -261,10 +275,16 @@ var treeView = function(self, element, store) {
         }
         store.update();
 
-        var selection = _.map(_.filter(store.items, 'selected'), 'path');
-        event.dataTransfer.setData('text/plain', selection.join('\n'));
-        event.dataTransfer.setData('text/uri-list', selection.join('\n'));
-        event.dataTransfer.effectAllowed = 'move';
+        var selection = _.reduce(store.items, function(result, item, i) {
+            if (item.selected) {
+                result.push(i);
+            }
+            return result;
+        }, []);
+        window.dragDropData = {
+            action: 'move',
+            items: selection,
+        };
     });
 
     var getDragIndex = function(event) {
@@ -281,50 +301,49 @@ var treeView = function(self, element, store) {
     };
 
     self.on('dragover', function(event) {
-        event.preventDefault();
-        var elements = store.getElements();
-        var index = getDragIndex(event);
+        if (store.canDrop(window.dragDropData)) {
+            event.preventDefault();
+            var elements = store.getElements();
+            var index = getDragIndex(event);
 
-        _.forEach(elements, function(el, i) {
-            if (i + 1 === index) {
-                el.classList.add('drop-below');
-            } else {
-                el.classList.remove('drop-below');
+            _.forEach(elements, function(el, i) {
+                if (i + 1 === index) {
+                    el.classList.add('drop-below');
+                } else {
+                    el.classList.remove('drop-below');
+                }
+                el.classList.remove('drop-above');
+            });
+            if (index === 0 && elements.length > 0) {
+                elements[0].classList.add('drop-above');
             }
-            el.classList.remove('drop-above');
-        });
-        if (index === 0 && elements.length > 0) {
-            elements[0].classList.add('drop-above');
         }
     });
 
     self.on('drop', function(event) {
-        event.preventDefault();
-        var index = getDragIndex(event);
-        var _items = [];
+        if (store.canDrop(window.dragDropData)) {
+            event.preventDefault();
 
-        var uriList = event.dataTransfer.getData('text');
-        var dropEffect = event.dataTransfer.effectAllowed;  // HACK: dropEffect is not available in chrome
+            var index = getDragIndex(event);
+            var data = window.dragDropData;
 
-        Promise.all(_.map(uriList.split('\n'), store.uri2item)).then(function(newItems) {
-            _.forEach(store.items, function(item, i) {
-                if (i === index) {
-                    _items = _items.concat(newItems);
-                }
-                if (!item.selected || dropEffect !== 'move') {
-                    _items.push(item);
-                }
-            });
-            if (store.items.length <= index) {
-                _items = _items.concat(newItems);
+            if (data.action = 'move') {
+                store.moveBefore(data.items, index);
+            } else {
+                store.insertBefore(data.items, index);
             }
 
-            store.items = _items;
             store.update();
+        }
+    });
 
-            // FIXME: focus the element that was dragged
+    self.on('dragend', function(event) {
+        // FIXME: not executed
+        window.dragDropData = null;
+
+        _.forEach(store.getElements(), function(el, i) {
+            el.classList.remove('drop-below');
+            el.classList.remove('drop-above');
         });
-
-        event.dataTransfer.clearData();
     });
 };

@@ -322,6 +322,9 @@
                     hasFocus: playlist.hasFocus,
                 });
             };
+            playlist.canDrop = function() {
+                return true;
+            };
 
             playlist.on('change', playlist.update);
 
