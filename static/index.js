@@ -22,18 +22,40 @@
         };
 
         self.clear = function() {
+            self.current = 0;
             self.items = [];
             self.dispatchEvent('clear');
             self.dispatchEvent('change');
-            player.src= null;
+            player.src = null;
         };
-        self.append = function(item) {
-            self.items.push(item);
+
+        self.insertBefore = function(items, position) {
+            // FIXME calculate self.current if it is moved itself
+            if (position <= self.current) {
+                self.current += items.length;
+            }
+            self.items.splice.apply(self.items, [position, 0].concat(items));
             self.dispatchEvent('change');
         };
-        self.delete = function(index) {
-            self.items.splice(index, 1);
+
+        self.remove = function(positions) {
+            var pop = function(arr, i) {
+                return arr.splice(i, 1)[0];
+            };
+
+            var done = [];
+            var removed = [];
+
+            for (var i = 0; i < positions.length; i++) {
+                var position = positions[i];
+                position -= _.filter(done, (p) => p < position).length;
+                removed.push(pop(self.items, position))
+                done.push(positions[i]);
+            }
+            self.current -= _.filter(done, (p) => p < self.current).length;
+
             self.dispatchEvent('change');
+            return removed;
         };
 
         self.uri2item = function(uri) {
@@ -43,8 +65,15 @@
             return xhr.getJSON('/info.json?path=' + uri);
         };
 
+        self.insertUriBefore = function(uris, position) {
+            var promises = _.map(uris, self.uri2item);
+            return Promise.all(promises).then(function(items) {
+                self.insertBefore(items, position);
+            });
+        };
+
         self.appendUri = function(uri) {
-            return self.uri2item(uri).then(self.append);
+            return self.uri2item(uri).then((i) => self.append([i]));
         };
 
         self.play = function(i) {
@@ -77,6 +106,7 @@
         muu.$.on(player, 'play', updateStatus);
         muu.$.on(player, 'pause', updateStatus);
     };
+    Playlist.prototype = new TreeStore();
 
     var formatTime = function(duration) {
         var s = '';
