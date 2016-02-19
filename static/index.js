@@ -1,4 +1,4 @@
-(function(muu, xhr, Mustache, _) {
+(function(window, undefined, muu, xhr, Mustache, _) {
     'use strict';
 
     var Playlist = function(player, files) {
@@ -538,4 +538,4 @@
 
         registry.linkAll(document);
     });
-})(muu, PromiseXHR, Mustache, _);
+})(window, void 0, muu, PromiseXHR, Mustache, _);
