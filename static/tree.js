@@ -33,6 +33,7 @@
  */
 
 // FIXME: use one store with more than one view
+// FIXME: cleanup position/index
 
 var TreeStore = function() {};
 

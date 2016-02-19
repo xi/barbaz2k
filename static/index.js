@@ -125,7 +125,7 @@
             dir: true,
             path: path,
             title: _.last(path.split('/')),
-            expanded: path.match(/Beat/i),
+            expanded: false,
             selected: false,
         };
 
@@ -285,6 +285,7 @@
             self.on('filter', store.update);
 
             self.on('toggle', function(event) {
+                event.preventDefault();
                 var element = event.currentTarget.parentNode.children[1];
                 var index = _.indexOf(store.getElements(), element);
                 var item = store.items[index];
