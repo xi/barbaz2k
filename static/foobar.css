@@ -12,6 +12,9 @@ table {
 *:focus {
   outline: #006FA5 auto 5px;
 }
+*[data-onclick][tabindex="-1"] {
+  cursor: default;
+}
 .topbar,
 .statusbar,
 .file-browser,
