@@ -334,7 +334,7 @@
                 }
             });
 
-            self.on('filter', store.update);
+            self.on('filter', () => store.update());
 
             self.on('toggle', function(event) {
                 event.preventDefault();
