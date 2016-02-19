@@ -194,9 +194,6 @@ html {
   background: #595959;
   outline: none;
 }
-.file-browser a.focus-inactive {
-  background: #2A2A2A;
-}
 .listview {
   display: block;
   position: absolute;
@@ -251,4 +248,7 @@ html {
 }
 .listitem.drop-below {
   border-bottom: 2px solid #006FA5;
+}
+*[tabindex="0"] .listitem.is-selected.is-selected {
+  background: #2A2A2A;
 }

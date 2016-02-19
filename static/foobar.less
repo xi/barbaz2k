@@ -250,9 +250,6 @@ html {
 		background: @focus;
 		outline: none;
 	}
-	&.focus-inactive {
-		background: @unfocus;
-	}
 }
 
 .listview {
@@ -319,4 +316,7 @@ html {
 	&.drop-below {
 		border-bottom: 2px solid @highlight;
 	}
+}
+*[tabindex="0"] .listitem.is-selected.is-selected {
+	background: @unfocus;
 }
