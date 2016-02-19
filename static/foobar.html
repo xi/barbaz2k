@@ -9,7 +9,9 @@
 </div>
 
 <div class="file-browser">
-	<input type="search" name="q" data-onsearch="filter" data-onkeyup="filter" />
+	<div class="search-wrapper">
+		<input type="search" name="q" data-onsearch="filter" data-onkeyup="filter" />
+	</div>
 	{{#items}}
 	<ul
 		{{^hasFocus}}tabindex="0"{{/hasFocus}}
