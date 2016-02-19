@@ -106,6 +106,16 @@ TreeStore.prototype.setFocus = function(position) {
     this.getElements()[position].focus();
 };
 
+TreeStore.prototype.getSelection = function() {
+    var selection = [];
+    _.forEach(this.items, function(item, i) {
+        if (item.selected) {
+            selection.push(i);
+        }
+    });
+    return selection;
+};
+
 
 var treeView = function(self, element, store) {
     store.update();

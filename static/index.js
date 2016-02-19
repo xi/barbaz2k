@@ -90,17 +90,10 @@
         };
 
         self.drag = function(index) {
-            var selection = [];
-            _.forEach(self.items, function(item, i) {
-                if (item.selected) {
-                    selection.push(i);
-                }
-            });
-
             return {
                 origin: 'playlist',
                 focus: index,
-                selection: selection,
+                selection: self.getSelection(),
             };
         };
 
@@ -309,13 +302,7 @@
                 return _.indexOf(this.items, childItem);
             };
             FileStore.prototype.drag = function(index) {
-                var selection = [];
-                _.forEach(this.items, function(item, i) {
-                    if (item.selected) {
-                        selection.push(i);
-                    }
-                });
-
+                var selection = this.getSelection();
                 return {
                     origin: 'filelist',
                     uris: _.map(selection, (i) => '/proxy' + this.items[i].path),
