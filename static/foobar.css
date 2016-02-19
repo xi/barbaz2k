@@ -111,13 +111,9 @@ html {
   margin: 0;
   line-height: 1.3;
 }
-.file-browser ul ul {
-  border-left: 1px dotted #E0E0E0;
-  padding-left: 0.5em;
-  margin-left: 0.5em;
-}
 .file-browser ul .expander {
-  display: inline-block;
+  position: absolute;
+  left: -0.7em;
   vertical-align: middle;
   text-align: center;
   height: 11px;
@@ -125,7 +121,30 @@ html {
   font-size: 9px;
   line-height: 9px;
   border: 1px dotted #E0E0E0;
-  margin-left: 1px;
+  background: black;
+}
+.file-browser ul li {
+  margin-left: 0.5em;
+  border-left: 1px dotted #E0E0E0;
+  padding-left: 0.9em;
+  position: relative;
+}
+.file-browser ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  height: 0.5em;
+  width: 0.7em;
+  border-color: #E0E0E0;
+  border-style: dotted;
+  border-width: 0;
+  border-bottom-width: 1px;
+}
+.file-browser ul li:last-child {
+  border-left: 0;
+}
+.file-browser ul li:last-child::before {
+  border-left-width: 1px;
 }
 .file-browser > ul {
   flex: auto;
@@ -181,9 +200,9 @@ html {
 .listitem.is-selected {
   background: #595959;
 }
-.listitem.drop-above {
+.listitem.drop-above td {
   border-top: 2px solid #006FA5;
 }
-.listitem.drop-below {
+.listitem.drop-below td {
   border-bottom: 2px solid #006FA5;
 }
