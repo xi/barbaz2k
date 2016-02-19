@@ -72,7 +72,7 @@ TreeStore.prototype.remove = function(positions) {
 
 TreeStore.prototype.moveBefore = function(positions, position) {
     var items = this.remove(positions);
-    position -= positions.filter((p) => p < position).length;
+    position -= _.filter(positions, (p) => p < position).length;
     this.insertBefore(items, position);
 };
 
