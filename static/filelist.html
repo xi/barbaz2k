@@ -18,14 +18,16 @@
 </li>
 {{/dirs}}
 {{#files}}
-<li
-	class="listitem {{#selected}}is-selected{{/selected}}"
-	data-href="/proxy{{path}}"
-	tabindex="-1"
-	draggable="true"
-	data-onclick="click"
-	data-ondblclick="dblclick"
-	data-onkeydown="keydown"
-	data-ondragstart="dragstart"
->{{title}}</li>
+<li>
+	<span
+		class="listitem {{#selected}}is-selected{{/selected}}"
+		data-href="/proxy{{path}}"
+		tabindex="-1"
+		draggable="true"
+		data-onclick="click"
+		data-ondblclick="dblclick"
+		data-onkeydown="keydown"
+		data-ondragstart="dragstart"
+	>{{title}}</span>
+</li>
 {{/files}}
