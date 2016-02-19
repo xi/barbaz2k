@@ -333,10 +333,7 @@ var treeView = function(self, element, store) {
         }
     });
 
-    self.on('dragend', function(event) {
-        // FIXME: not executed
-        window.dragDropData = null;
-
+    self.on('dragleave', function(event) {
         _.forEach(store.getElements(), function(el, i) {
             el.classList.remove('drop-below');
             el.classList.remove('drop-above');

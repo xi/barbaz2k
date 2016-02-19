@@ -266,6 +266,7 @@
         registry.events.push('dragstart');
         registry.events.push('dragover');
         registry.events.push('drop');
+        registry.events.push('dragleave');
         registry.events.push('input');
         registry.events.push('dblclick');
         registry.events.push('keydown');

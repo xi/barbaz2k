@@ -6,6 +6,7 @@
     data-onfocusout="focusout"
     data-ondragover="dragover"
     data-ondrop="drop"
+    data-ondragleave="dragleave"
 >
     <tbody>
         {{#items}}
@@ -18,7 +19,6 @@
             data-ondblclick="dblclick"
             data-onkeydown="keydown"
             data-ondragstart="dragstart"
-            data-ondragend="dragend"
         >
             <td>{{#playing}}<i class="fa fa-play"></i>{{/playing}}{{#paused}}<i class="fa fa-pause"></i>{{/paused}}</td>
             <td>{{title}}</td>
