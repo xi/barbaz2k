@@ -80,6 +80,14 @@ TreeStore.prototype.moveAfter = function(positions, position) {
     this.moveBefore(positions, position + 1);
 };
 
+TreeStore.prototype.parentIndex = function(index) {
+    return -1;
+};
+
+TreeStore.prototype.childIndex = function(index) {
+    return -1;
+};
+
 TreeStore.prototype.canDrop = function(dragDropData) {
     return false;
 };
