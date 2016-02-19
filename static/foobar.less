@@ -262,16 +262,61 @@ html {
 	bottom: 0;
 	left: 0;
 	right: 0;
+
+	.listitem {
+		float: left;
+		width: 100%;
+		position: relative;
+		clear: both;
+
+		line-height: 1.5;
+
+		&:nth-child(even) {
+			background: mix(@bg2, @fg2, 96%);
+		}
+	}
+
+	.playlist-item-playing,
+	.playlist-item-title,
+	.playlist-item-artist,
+	.playlist-item-duration {
+		position: relative;
+		float: left;
+		left: 100%;
+
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	.playlist-item-playing {
+		width: 5%;
+		margin-left: -99%;
+	}
+	.playlist-item-title {
+		width: 46%;
+		margin-left: -93%;
+	}
+	.playlist-item-artist {
+		width: 36%;
+		margin-left: -46%;
+	}
+	.playlist-item-duration {
+		width: 8%;
+		margin-left: -9%;
+		text-align: right;
+	}
 }
+
 .listitem {
-	&.is-selected {
+	&.is-selected.is-selected {
 		background: @focus;
 	}
 
-	&.drop-above td {
+	&.drop-above {
 		border-top: 2px solid @highlight;
 	}
-	&.drop-below td {
+	&.drop-below {
 		border-bottom: 2px solid @highlight;
 	}
 }

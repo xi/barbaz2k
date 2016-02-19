@@ -205,12 +205,50 @@ html {
   left: 0;
   right: 0;
 }
-.listitem.is-selected {
+.listview .listitem {
+  float: left;
+  width: 100%;
+  position: relative;
+  clear: both;
+  line-height: 1.5;
+}
+.listview .listitem:nth-child(even) {
+  background: #0a0a0a;
+}
+.listview .playlist-item-playing,
+.listview .playlist-item-title,
+.listview .playlist-item-artist,
+.listview .playlist-item-duration {
+  position: relative;
+  float: left;
+  left: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.listview .playlist-item-playing {
+  width: 5%;
+  margin-left: -99%;
+}
+.listview .playlist-item-title {
+  width: 46%;
+  margin-left: -93%;
+}
+.listview .playlist-item-artist {
+  width: 36%;
+  margin-left: -46%;
+}
+.listview .playlist-item-duration {
+  width: 8%;
+  margin-left: -9%;
+  text-align: right;
+}
+.listitem.is-selected.is-selected {
   background: #595959;
 }
-.listitem.drop-above td {
+.listitem.drop-above {
   border-top: 2px solid #006FA5;
 }
-.listitem.drop-below td {
+.listitem.drop-below {
   border-bottom: 2px solid #006FA5;
 }

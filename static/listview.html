@@ -1,4 +1,4 @@
-<table
+<div
     class="listview"
     {{^hasFocus}}tabindex="0"{{/hasFocus}}
     data-onclick="click"
@@ -8,23 +8,21 @@
     data-ondrop="drop"
     data-ondragleave="dragleave"
 >
-    <tbody>
-        {{#items}}
-        <tr
-            class="listitem {{#selected}}is-selected{{/selected}}"
-            data-href="/proxy{{path}}"
-            tabindex="-1"
-            draggable="true"
-            data-onclick="click"
-            data-ondblclick="dblclick"
-            data-onkeydown="keydown"
-            data-ondragstart="dragstart"
-        >
-            <td>{{#playing}}<i class="fa fa-play"></i>{{/playing}}{{#paused}}<i class="fa fa-pause"></i>{{/paused}}</td>
-            <td>{{title}}</td>
-            <td>{{artist}}</td>
-            <td>{{duration}}</td>
-        </tr>
-        {{/items}}
-    </tbody>
-</table>
+    {{#items}}
+    <div
+        class="listitem {{#selected}}is-selected{{/selected}}"
+        data-href="/proxy{{path}}"
+        tabindex="-1"
+        draggable="true"
+        data-onclick="click"
+        data-ondblclick="dblclick"
+        data-onkeydown="keydown"
+        data-ondragstart="dragstart"
+    >
+        <div class="playlist-item-playing">{{#playing}}<i class="fa fa-play"></i>{{/playing}}{{#paused}}<i class="fa fa-pause"></i>{{/paused}}</div>
+        <div class="playlist-item-title">{{title}}</div>
+        <div class="playlist-item-artist">{{artist}}</div>
+        <div class="playlist-item-duration">{{duration}}</div>
+    </div>
+    {{/items}}
+</div>
