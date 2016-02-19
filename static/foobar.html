@@ -14,12 +14,13 @@
 	</div>
 	{{#items}}
 	<ul
+		class="filetree"
 		{{^hasFocus}}tabindex="0"{{/hasFocus}}
 		data-onclick="click"
 		data-onfocusin="focusin"
 		data-onfocusout="focusout"
 	>
-		{{> filelist}}
+		{{> filetree}}
 	</ul>
 	{{/items}}
 	{{#art}}
@@ -27,10 +28,5 @@
 	{{/art}}
 </div>
 
-<div class="playlist">
-	<muu type="listview"></muu>
-</div>
-
-<div class="statusbar">
-	<muu type="statusbar"></muu>
-</div>
+<muu type="playlist"></muu>
+<muu type="statusbar"></muu>

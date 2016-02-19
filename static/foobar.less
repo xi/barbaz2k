@@ -31,10 +31,6 @@ table {
 	outline: @highlight auto 5px;
 }
 
-*[data-onclick][tabindex="-1"] {
-	cursor: default;
-}
-
 // layout
 
 .topbar,
@@ -76,7 +72,19 @@ table {
 	height: @statusbar-height;
 }
 
-// foo
+// layout borders
+
+.statusbar {
+	border-top: 1px solid @border;
+}
+.top {
+	border-bottom: 1px solid @border;
+}
+.file-browser {
+	border-right: 1px solid @border;
+}
+
+// basic colors
 
 html {
 	color: @fg1;
@@ -89,17 +97,30 @@ html {
 	background: @bg2;
 }
 
-.statusbar {
-	border-top: 1px solid @border;
-}
-.top {
-	border-bottom: 1px solid @border;
-}
-.file-browser {
-	border-right: 1px solid @border;
+*[data-onclick][tabindex="-1"] {
+	cursor: default;
 }
 
-// slider
+// topbar
+
+.topbar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 0 0.5em;
+
+	.separator {
+		display: inline-block;
+		height: @topbar-height;
+		margin: 0 0.5em;
+		border-left: 1px solid @border;
+		border-right: 1px solid #FDFDFE;
+	}
+
+	> *:last-child {
+		flex: auto;
+	}
+}
 
 .playback-buttons,
 .volume,
@@ -136,6 +157,32 @@ html {
 	}
 }
 
+.spectrum {
+	height: 1.4em;
+	width: 8em;
+	background: black;
+}
+
+// generic listitem
+
+.listitem {
+	&.is-selected.is-selected.is-selected {
+		background: @focus;
+	}
+
+	&.drop-above {
+		border-top: 2px solid @highlight;
+	}
+	&.drop-below {
+		border-bottom: 2px solid @highlight;
+	}
+}
+
+*[tabindex="0"] .listitem.is-selected.is-selected.is-selected {
+	background: @unfocus;
+}
+
+// file-browser
 
 .file-browser {
 	display: flex;
@@ -154,50 +201,37 @@ html {
 		padding: 0;
 		margin: 0;
 		line-height: 1.3;
+	}
 
-		.expander {
+	li {
+		margin-left: 0.5em;
+		border-left: 1px dotted @lines;
+		padding-left: 0.9em;
+		position: relative;
+
+		&::before {
+			content: "";
 			position: absolute;
-			left: -0.7em;
-			vertical-align: middle;
-			text-align: center;
-			height: 11px;
-			width: 11px;
-			font-size: 9px;
-			line-height: 9px;
-			border: 1px dotted @lines;
-			background: @bg2;
+			left: 0;
+			height: 0.5em;
+			width: 0.7em;
+			border-color: @lines;
+			border-style: dotted;
+			border-width: 0;
+			border-bottom-width: 1px;
 		}
 
-		li {
-			margin-left: 0.5em;
-			border-left: 1px dotted @lines;
-			padding-left: 0.9em;
-			position: relative;
+		&:last-child {
+			border-left-color: transparent;
 
 			&::before {
-				content: "";
-				position: absolute;
-				left: 0;
-				height: 0.5em;
-				width: 0.7em;
-				border-color: @lines;
-				border-style: dotted;
-				border-width: 0;
-				border-bottom-width: 1px;
-			}
-
-			&:last-child {
-				border-left-color: transparent;
-
-				&::before {
-					border-left-width: 1px;
-					left: -1px;
-				}
+				border-left-width: 1px;
+				left: -1px;
 			}
 		}
 	}
 
-	> ul {
+	.filetree {
 		flex: auto;
 		overflow: auto;
 
@@ -209,57 +243,31 @@ html {
 		padding: 0.5em;
 	}
 
-	.art {
-		background-repeat: no-repeat;
-		background-color: @bg2;
-		background-position: 50%;
-		background-size: contain;
-		min-height: 10em;
+	.expander {
+		position: absolute;
+		left: -0.7em;
+		vertical-align: middle;
+		text-align: center;
+		height: 11px;
+		width: 11px;
+		font-size: 9px;
+		line-height: 9px;
+		border: 1px dotted @lines;
+		background: @bg2;
 	}
 }
 
-.spectrum {
-	height: 1.4em;
-	width: 8em;
-	background: black;
+.art {
+	background-repeat: no-repeat;
+	background-color: @bg2;
+	background-position: 50%;
+	background-size: contain;
+	min-height: 10em;
 }
 
-.topbar {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	padding: 0 0.5em;
+// playlist
 
-	.separator {
-		display: inline-block;
-		height: @topbar-height;
-		margin: 0 0.5em;
-		border-left: 1px solid @border;
-		border-right: 1px solid #FDFDFE;
-	}
-
-	> *:last-child {
-		flex: auto;
-	}
-}
-
-.file-browser a {
-	padding: 1px;
-
-	&:focus {
-		background: @focus;
-		outline: none;
-	}
-}
-
-.listview {
-	display: block;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-
+.playlist {
 	.listitem {
 		float: left;
 		width: 100%;
@@ -303,20 +311,4 @@ html {
 		margin-left: -9%;
 		text-align: right;
 	}
-}
-
-.listitem {
-	&.is-selected.is-selected {
-		background: @focus;
-	}
-
-	&.drop-above {
-		border-top: 2px solid @highlight;
-	}
-	&.drop-below {
-		border-bottom: 2px solid @highlight;
-	}
-}
-*[tabindex="0"] .listitem.is-selected.is-selected {
-	background: @unfocus;
 }

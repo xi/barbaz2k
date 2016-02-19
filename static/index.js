@@ -280,18 +280,18 @@
 
     Promise.all([
         xhr.get('/static/foobar.html'),
-        xhr.get('/static/filelist.html'),
+        xhr.get('/static/filetree.html'),
         xhr.get('/static/buttons.html'),
-        xhr.get('/static/listview.html'),
+        xhr.get('/static/playlist.html'),
         xhr.getJSON('/files.json'),
     ]).then(function(args) {
         var template = args[0];
-        var buttons = args[2]
-        var listview = args[3];
+        var buttonsTpl = args[2]
+        var playlistTpl = args[3];
         var files = args[4];
 
         var partials = {
-            filelist: args[1],
+            filetree: args[1],
         };
 
         var registry = new muu.Registry({
@@ -383,7 +383,7 @@
             treeView(self, element, store);
         });
 
-        registry.registerDirective('listview', listview, function(self, element) {
+        registry.registerDirective('playlist', playlistTpl, function(self, element) {
             playlist.getElements = function() {
                 return self.querySelectorAll('.listitem');
             };
@@ -405,9 +405,16 @@
             });
         });
 
-        var slider = '<input class="{{class}}" data-oninput="change" data-onchange="change" type="range" min="0" max="{{max}}" name="value" value="{{value}}"/>';
+        var sliderTpl = '<input class="{{class}}" ' +
+            'data-oninput="change" ' +
+            'data-onchange="change" ' +
+            'type="range" ' +
+            'min="0" ' +
+            'max="{{max}}" ' +
+            'name="value" ' +
+            'value="{{value}}"/>';
 
-        registry.registerDirective('seeker', slider, function(self, element) {
+        registry.registerDirective('seeker', sliderTpl, function(self, element) {
             self.update({
                 value: 0,
                 max: 500,
@@ -423,7 +430,7 @@
             });
         });
 
-        registry.registerDirective('volume', slider, function(self, element) {
+        registry.registerDirective('volume', sliderTpl, function(self, element) {
             self.update({
                 value: player.volume * 500,
                 max: 100,
@@ -439,7 +446,7 @@
             });
         });
 
-        registry.registerDirective('buttons', buttons, function(self) {
+        registry.registerDirective('buttons', buttonsTpl, function(self) {
             self.update({});
 
             self.on('play', function(event) {
@@ -512,7 +519,8 @@
             };
         });
 
-        registry.registerDirective('statusbar', '{{ status }} | {{time}} | Total time: {{ totalTime }}', function(self) {
+        var statusbarTpl = '<div class="statusbar">{{ status }} | {{time}} | Total time: {{ totalTime }}</div>';
+        registry.registerDirective('statusbar', statusbarTpl, function(self) {
             var update = function() {
                 self.update({
                     status: player.paused ? 'paused' : 'playing',
