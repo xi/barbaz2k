@@ -160,7 +160,11 @@ html {
   padding: 0.5em;
 }
 .file-browser .art {
-  max-height: 30%;
+  background-repeat: no-repeat;
+  background-color: black;
+  background-position: 50%;
+  background-size: contain;
+  min-height: 10em;
 }
 .spectrum {
   height: 1.4em;
