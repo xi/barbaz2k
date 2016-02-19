@@ -150,11 +150,15 @@ html {
 		padding: 0;
 		margin: 0;
 		line-height: 1.3;
+		border-left: 1px dotted @lines;
+		padding-left: 0.5em;
 
 		ul {
-			border-left: 1px dotted @lines;
-			padding-left: 0.5em;
-			margin-left: 0.5em;
+			margin-left: 1.5em;
+		}
+
+		.treeview-node {
+			margin-left: -1.1em;  // 1em + 11px / 2
 		}
 
 		.expander {
@@ -167,10 +171,11 @@ html {
 			line-height: 9px;
 			border: 1px dotted @lines;
 			margin-left: 1px;
+			background: @bg2;
 		}
 	}
 
-	> ul {
+	.file-browser-wrapper {
 		flex: auto;
 		overflow: auto;
 
@@ -180,6 +185,7 @@ html {
 		white-space: nowrap;
 
 		padding: 0.5em;
+		padding-left: 1em;
 	}
 
 	.art {

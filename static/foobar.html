@@ -10,16 +10,19 @@
 
 <div class="file-browser">
 	<input type="search" name="q" data-onsearch="filter" data-onkeyup="filter" />
-	{{#items}}
-	<ul
+	<div
+		class="file-browser-wrapper"
 		{{^hasFocus}}tabindex="0"{{/hasFocus}}
 		data-onclick="click"
 		data-onfocusin="focusin"
 		data-onfocusout="focusout"
 	>
-		{{> filelist}}
-	</ul>
-	{{/items}}
+		{{#items}}
+		<ul>
+			{{> filelist}}
+		</ul>
+		{{/items}}
+	</div>
 	{{#art}}
 	<img class="art" src="/proxy{{art}}" alt=""/>
 	{{/art}}
