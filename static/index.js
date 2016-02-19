@@ -270,8 +270,6 @@
                 return _.indexOf(store.items, childItem);
             };
 
-            treeView(self, element, store);
-
             self.on('activate', function(event) {
                 event.preventDefault();
                 var url = event.currentTarget.dataset.href;
@@ -312,6 +310,8 @@
                     }
                 }
             });
+
+            treeView(self, element, store);
         });
 
         registry.registerDirective('listview', listview, function(self, element) {
