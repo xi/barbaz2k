@@ -250,6 +250,34 @@
         return tree;
     };
 
+    var FileStore = function(files) {
+        var self = this;
+
+        self.items = [];
+        self.hasFocus = false;
+        self.tree = createTree(files);
+
+        self.parentIndex = function(index) {
+            var item = self.items[index];
+            return _.findIndex(self.items, function(i) {
+                return _.indexOf(i.dirs, item) !== -1 || _.indexOf(i.files, item) !== -1;
+            });
+        };
+        self.childIndex = function(index) {
+            var item = self.items[index];
+            var childItem = item.dirs[0] || item.files[0];
+            return _.indexOf(self.items, childItem);
+        };
+        self.drag = function(index) {
+            var selection = self.getSelection();
+            return {
+                origin: 'filelist',
+                uris: _.map(selection, (i) => self.items[i].path),
+            };
+        };
+    };
+    FileStore.prototype = new TreeStore();
+
     Promise.all([
         xhr.get('/static/foobar.html'),
         xhr.get('/static/filelist.html'),
@@ -287,43 +315,20 @@
         window.playlist = playlist;
 
         registry.registerDirective('foobar', template, function(self, element) {
-            var FileStore = function(files) {
-                this.items = [];
-                this.hasFocus = false;
-                this.tree = createTree(files);
-            };
-            FileStore.prototype = new TreeStore();
-            FileStore.prototype.getElements = function() {
+            var store = new FileStore(files);
+
+            store.getElements = function() {
                 return self.querySelectorAll('.listitem');
             };
-            FileStore.prototype.update = function() {
+            store.update = function() {
                 var q = self.getModel('q', '').toLowerCase();
-                this.items = this.tree.asList(q);
+                this.items = store.tree.asList(q);
                 self.update({
-                    items: this.tree.asTree(q),
-                    hasFocus: this.hasFocus,
+                    items: store.tree.asTree(q),
+                    hasFocus: store.hasFocus,
                     art: (playlist.items[playlist.current] || {}).art,
                 });
             };
-            FileStore.prototype.parentIndex = function(index) {
-                var item = this.items[index];
-                return _.findIndex(this.items, function(i) {
-                    return _.indexOf(i.dirs, item) !== -1 || _.indexOf(i.files, item) !== -1;
-                });
-            };
-            FileStore.prototype.childIndex = function(index) {
-                var item = this.items[index];
-                var childItem = item.dirs[0] || item.files[0];
-                return _.indexOf(this.items, childItem);
-            };
-            FileStore.prototype.drag = function(index) {
-                var selection = this.getSelection();
-                return {
-                    origin: 'filelist',
-                    uris: _.map(selection, (i) => this.items[i].path),
-                };
-            };
-            var store = new FileStore(files);
 
             // for updating cover art
             muu.$.on(player, 'play', () => store.update());
