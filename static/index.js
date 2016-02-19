@@ -290,6 +290,7 @@
                 var item = store.items[index];
                 item.expanded = !item.expanded;
                 store.update();
+                store.setFocus(index);
             });
 
             self.on('keydown', function(event) {
