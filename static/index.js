@@ -279,10 +279,10 @@
     FileStore.prototype = new TreeStore();
 
     Promise.all([
-        xhr.get('/static/foobar.html'),
-        xhr.get('/static/filetree.html'),
-        xhr.get('/static/buttons.html'),
-        xhr.get('/static/playlist.html'),
+        xhr.get('/static/templates/foobar.html'),
+        xhr.get('/static/templates/filetree.html'),
+        xhr.get('/static/templates/buttons.html'),
+        xhr.get('/static/templates/playlist.html'),
         xhr.getJSON('/files.json'),
     ]).then(function(args) {
         var template = args[0];
