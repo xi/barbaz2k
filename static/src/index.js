@@ -2,6 +2,7 @@ var muu = require('muu');
 var xhr = require('promise-xhr');
 var Mustache = require('mustache');
 var virtualDom = require('virtual-dom');
+var h = require('virtual-dom/h');
 var _ = require('./lodash');
 
 var tree = require('./tree');
@@ -205,14 +206,20 @@ xhr.getJSON('/files.json').then(function(files) {
         return playlist.on('change', playlist.update);
     });
 
-    var sliderTpl = '<input class="{{class}}" ' +
-        'data-oninput="change" ' +
-        'data-onchange="change" ' +
-        'type="range" ' +
-        'min="0" ' +
-        'max="{{max}}" ' +
-        'name="value" ' +
-        'value="{{value}}"/>';
+    var sliderTpl = function(data) {
+        return h('input', {
+            className: data.class,
+            type: 'range',
+            min: 0,
+            max: data.max,
+            name: 'value',
+            value: data.value,
+            dataset: {
+                oninput: 'change',
+                onchange: 'change'
+            }
+        });
+    };
 
     registry.registerDirective('seeker', sliderTpl, function(self, element) {
         self.update({
@@ -326,7 +333,9 @@ xhr.getJSON('/files.json').then(function(files) {
         };
     });
 
-    var statusbarTpl = '<div class="statusbar">{{ status }} | {{time}} | Total time: {{ totalTime }}</div>';
+    var statusbarTpl = function(data) {
+        return h('div.statusbar', [data.status, '|', data.time, '|', 'Total time: ' + data.totalTime]);
+    };
     registry.registerDirective('statusbar', statusbarTpl, function(self) {
         var update = function() {
             self.update({
