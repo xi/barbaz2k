@@ -8,6 +8,8 @@ var tree = require('./tree');
 var Playlist = require('./playlist');
 var FileStore = require('./filestore');
 
+var playlistTpl = require('./templates/playlist');
+
 
 var formatTime = function(duration) {
     var s = '';
@@ -40,13 +42,11 @@ Promise.all([
     xhr.get('/static/templates/barbaz.html'),
     xhr.get('/static/templates/filetree.html'),
     xhr.get('/static/templates/buttons.html'),
-    xhr.get('/static/templates/playlist.html'),
     xhr.getJSON('/files.json'),
 ]).then(function(args) {
     var template = args[0];
     var buttonsTpl = args[2];
-    var playlistTpl = args[3];
-    var files = args[4];
+    var files = args[3];
 
     var partials = {
         filetree: args[1],
