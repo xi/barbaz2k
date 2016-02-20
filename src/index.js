@@ -104,7 +104,7 @@ var Playlist = function(player, files) {
 
     self.play = function(i) {
         self.current = i;
-        player.src = '/proxy' + self.items[i].path;
+        player.src = '/file' + self.items[i].path;
         player.play();
         self.dispatchEvent('change');
     };
@@ -358,7 +358,7 @@ Promise.all([
                 playlist.appendUri(uris);
             } else {
                 var index = _.indexOf(store.getElements(), event.currentTarget);
-                player.src = '/proxy' + store.items[index].path;
+                player.src = '/file' + store.items[index].path;
                 player.play();
             }
         });
