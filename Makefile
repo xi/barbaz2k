@@ -23,7 +23,6 @@ static/src/lodash.js: .env
 	echo browserify >> node_deps
 	echo uglifyjs >> node_deps
 	echo node-sass >> node_deps
-	echo mustache >> node_deps
 	echo virtual-dom >> node_deps
 	echo xi/muu >> node_deps
 	echo wildlyinaccurate/promise-xhr >> node_deps

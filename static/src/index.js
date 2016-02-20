@@ -1,6 +1,5 @@
 var muu = require('muu');
 var xhr = require('promise-xhr');
-var Mustache = require('mustache');
 var virtualDom = require('virtual-dom');
 var h = require('virtual-dom/h');
 var _ = require('./lodash');
@@ -45,19 +44,12 @@ xhr.getJSON('/files.json').then(function(files) {
 
     var registry = new muu.Registry({
         renderer: function(template, data) {
-            if (typeof template == 'string') {
-                return Mustache.render(template, data);
-            } else {
-                return template(data);
-            }
+            return template && template(data);
         }
     });
 
-    _updateDOM = registry.updateDOM;
     registry.updateDOM = function(target, newTree) {
-        if (typeof newTree == 'string') {
-            _updateDOM(target, newTree);
-        } else {
+        if (newTree) {
             if (!target.tree) {
                 var el = virtualDom.create(newTree);
                 target.appendChild(el);
@@ -282,7 +274,7 @@ xhr.getJSON('/files.json').then(function(files) {
         });
     });
 
-    registry.registerDirective('spectrum', '', function(self, element) {
+    registry.registerDirective('spectrum', null, function(self, element) {
         self.update({});
 
         var color1 = sniffColor('spectrum', 'color');
