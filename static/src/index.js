@@ -1,6 +1,7 @@
 var muu = require('muu');
 var xhr = require('promise-xhr');
 var Mustache = require('mustache');
+var virtualDom = require('virtual-dom');
 var _ = require('./lodash');
 
 var tree = require('./tree');
@@ -52,10 +53,31 @@ Promise.all([
     };
 
     var registry = new muu.Registry({
-        renderer: function(a, b) {
-            return Mustache.render(a, b, partials);
+        renderer: function(template, data) {
+            if (typeof template == 'string') {
+                return Mustache.render(template, data);
+            } else {
+                return template(data);
+            }
         }
     });
+
+    _updateDOM = registry.updateDOM;
+    registry.updateDOM = function(target, newTree) {
+        if (typeof newTree == 'string') {
+            _updateDOM(target, newTree);
+        } else {
+            if (!target.tree) {
+                var el = virtualDom.create(newTree);
+                target.appendChild(el);
+            } else {
+                var patches = virtualDom.diff(target.tree, newTree);
+                virtualDom.patch(target.children[0], patches);
+            }
+            target.tree = newTree;
+        }
+    };
+
     registry.events.push('dragstart');
     registry.events.push('dragover');
     registry.events.push('drop');

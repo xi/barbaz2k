@@ -24,6 +24,7 @@ static/src/lodash.js: .env
 	echo uglifyjs >> node_deps
 	echo node-sass >> node_deps
 	echo mustache >> node_deps
+	echo virtual-dom >> node_deps
 	echo xi/muu >> node_deps
 	echo wildlyinaccurate/promise-xhr >> node_deps
 	. .env/bin/activate && nodeenv -p --node=system -r node_deps
