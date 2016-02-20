@@ -66,7 +66,7 @@ var createTree = function(files) {
     _.forEach(files, function(path) {
         var parts = path.slice(1).split('/');
         var head = tree;
-        var _parts = [];
+        var _parts = [''];
 
         _.forEach(parts.slice(0, -1), function(part) {
             _parts.push(part);
