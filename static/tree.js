@@ -64,7 +64,9 @@
 
             for (var i = 0; i < indices.length; i++) {
                 var index = indices[i];
-                index -= done.filter((p) => p < index).length;
+                index -= done.filter(function(i) {
+                    return p < index;
+                }).length;
                 removed.push(pop(this.items, index))
                 done.push(indices[i]);
             }
@@ -74,7 +76,9 @@
 
         this.moveBefore = function(indices, index) {
             var items = this.remove(indices);
-            index -= _.filter(indices, (i) => i < index).length;
+            index -= _.filter(indices, function(i) {
+                return i < index;
+            }).length;
             this.insertBefore(items, index);
         };
 
@@ -218,7 +222,9 @@
                 });
             } else if (event.keyCode == 67 && event.ctrlKey) {  // ctrl-c
                 event.preventDefault();
-                clipboard = _.map(store.getSelection(), (i) => store.items[i]);
+                clipboard = _.map(store.getSelection(), function(i) {
+                    return store.items[i];
+                });
                 _.forEach(clipboard, function(item) {
                     item.focus = false;
                     item.selected = false;
@@ -226,7 +232,9 @@
             } else if (event.keyCode == 86 && event.ctrlKey) {  // ctrl-v
                 event.preventDefault();
                 if (clipboard) {
-                    store.insertAfter(_.map(clipboard, (i) => _.clone(i)), index);
+                    store.insertAfter(_.map(clipboard, function(i) {
+                        return _.clone(i);
+                    }), index);
                 }
             } else if (event.keyCode == 65 && event.ctrlKey) {  // ctrl-a
                 _.forEach(store.items, function(item) {

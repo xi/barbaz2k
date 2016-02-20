@@ -48,11 +48,15 @@
 
             for (var i = 0; i < indices.length; i++) {
                 var index = indices[i];
-                index -= _.filter(done, (i) => i < index).length;
+                index -= _.filter(done, function(i) {
+                    return i < index;
+                }).length;
                 removed.push(pop(self.items, index))
                 done.push(indices[i]);
             }
-            self.current -= _.filter(done, (i) => i < self.current).length;
+            self.current -= _.filter(done, function(i) {
+                return i < self.current;
+            }).length;
 
             self.dispatchEvent('change');
             return removed;
@@ -272,7 +276,9 @@
             var selection = self.getSelection();
             return {
                 origin: 'filelist',
-                uris: _.map(selection, (i) => self.items[i].path),
+                uris: _.map(selection, function(i) {
+                    return self.items[i].path;
+                }),
             };
         };
     };
@@ -331,7 +337,9 @@
             };
 
             // for updating cover art
-            muu.$.on(player, 'play', () => store.update());
+            muu.$.on(player, 'play', function() {
+                store.update()
+            });
 
             self.on('activate', function(event) {
                 event.preventDefault();
@@ -348,7 +356,9 @@
                 }
             });
 
-            self.on('filter', () => store.update());
+            self.on('filter', function() {
+                store.update();
+            });
 
             self.on('toggle', function(event) {
                 event.preventDefault();
