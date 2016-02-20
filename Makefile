@@ -6,13 +6,10 @@ all: static/foobar.css static/foobar.js
 static/foobar.css: src/foobar.less .env
 	. .env/bin/activate && lessc $< > $@
 
-static/foobar.js: build/index.js build/tree.js build/lodash.js .env
+static/foobar.js: build/index.js build/tree.js build/filestore.js build/playlist.js build/lodash.js .env
 	. .env/bin/activate && browserify $< -o $@
 
-build/index.js: src/index.js build
-	cp $< $@
-
-build/tree.js: src/tree.js build
+build/%.js: src/%.js build
 	cp $< $@
 
 build/lodash.js: build .env
