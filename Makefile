@@ -20,10 +20,16 @@ build:
 
 .env:
 	virtualenv -p python3 .env
-	. .env/bin/activate && pip install nodeenv
-	. .env/bin/activate && nodeenv -p --node=system
 	. .env/bin/activate && pip install fakes mutagen audioread
-	. .env/bin/activate && npm install lodash-cli mustache xi/muu wildlyinaccurate/promise-xhr
+	. .env/bin/activate && pip install nodeenv
+	echo lodash-cli > node_deps
+	echo browserify >> node_deps
+	echo less >> node_deps
+	echo mustache >> node_deps
+	echo xi/muu >> node_deps
+	echo wildlyinaccurate/promise-xhr >> node_deps
+	. .env/bin/activate && nodeenv -p --node=system -r node_deps
+	rm node_deps
 
 clean:
 	rm -rf .env
