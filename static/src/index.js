@@ -8,6 +8,8 @@ var tree = require('./tree');
 var Playlist = require('./playlist');
 var FileStore = require('./filestore');
 
+var template = require('./templates/barbaz');
+var buttonsTpl = require('./templates/buttons');
 var playlistTpl = require('./templates/playlist');
 
 
@@ -38,19 +40,7 @@ var sniffColor = function(className, key) {
     return '#' + r + g + b;
 };
 
-Promise.all([
-    xhr.get('/static/templates/barbaz.html'),
-    xhr.get('/static/templates/filetree.html'),
-    xhr.get('/static/templates/buttons.html'),
-    xhr.getJSON('/files.json'),
-]).then(function(args) {
-    var template = args[0];
-    var buttonsTpl = args[2];
-    var files = args[3];
-
-    var partials = {
-        filetree: args[1],
-    };
+xhr.getJSON('/files.json').then(function(files) {
 
     var registry = new muu.Registry({
         renderer: function(template, data) {

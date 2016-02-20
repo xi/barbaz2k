@@ -9,7 +9,7 @@ static/barbaz.css: static/src/barbaz.scss static/src/contrast.scss static/src/ma
 static/barbaz.min.js: static/barbaz.js .env
 	. .env/bin/activate && cd static && uglifyjs --source-map barbaz.js.map barbaz.js -o barbaz.min.js
 
-static/barbaz.js: static/src/index.js static/src/tree.js static/src/filestore.js static/src/playlist.js static/src/lodash.js .env
+static/barbaz.js: static/src/index.js static/src/*.js static/src/templates/*.js static/src/lodash.js .env
 	. .env/bin/activate && browserify $< -o $@
 
 static/src/lodash.js: .env
