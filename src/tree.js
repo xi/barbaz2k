@@ -166,8 +166,6 @@ var treeView = function(self, element, store) {
     };
 
     self.on('keydown', function(event) {
-        // FIXME: delete, ctrl-x, ctrl-c, ctrl-v
-
         var index = _.indexOf(store.getElements(), event.currentTarget);
         var newIndex = getKeyIndex(event);
 
