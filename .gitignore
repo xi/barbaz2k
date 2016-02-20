@@ -1,4 +1,4 @@
-node_modules
-build
+.env
 static/foobar.css
 static/foobar.js
+static/src/lodash.js

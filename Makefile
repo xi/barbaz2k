@@ -3,20 +3,14 @@ run: all
 
 all: static/foobar.css static/foobar.js
 
-static/foobar.css: src/foobar.less .env
+static/foobar.css: static/src/foobar.less .env
 	. .env/bin/activate && lessc $< > $@
 
-static/foobar.js: build/index.js build/tree.js build/filestore.js build/playlist.js build/lodash.js .env
+static/foobar.js: static/src/index.js static/src/tree.js static/src/filestore.js static/src/playlist.js static/src/lodash.js .env
 	. .env/bin/activate && browserify $< -o $@
 
-build/%.js: src/%.js build
-	cp $< $@
-
-build/lodash.js: build .env
-	. .env/bin/activate && lodash include=assign,clone,concat,filter,find,findIndex,flatten,forEach,indexOf,last,map,some,startsWith,sum -d -o build/lodash.js
-
-build:
-	mkdir build
+static/src/lodash.js: .env
+	. .env/bin/activate && lodash include=assign,clone,concat,filter,find,findIndex,flatten,forEach,indexOf,last,map,some,startsWith,sum -d -o $@
 
 .env:
 	virtualenv -p python3 .env
@@ -31,8 +25,12 @@ build:
 	. .env/bin/activate && nodeenv -p --node=system -r node_deps
 	rm node_deps
 
-clean:
+clean-dev:
 	rm -rf .env
-	rm -rf build
+	rm -f static/src/lodash.js
+
+clean-prod:
 	rm -f static/foobar.css
 	rm -f static/foobar.js
+
+clean: clean-dev clean-prod
