@@ -19,6 +19,7 @@ table {
     color: inherit;
 }
 *:focus {
+    outline: @focus solid 2px;
     outline: @focus auto 5px;
 }
 
@@ -264,10 +265,8 @@ input {
 
 .playlist {
     .listitem {
-        float: left;
         width: 100%;
-        position: relative;
-        clear: both;
+        overflow: hidden;
 
         line-height: 1.5;
 
