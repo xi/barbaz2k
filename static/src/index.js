@@ -54,6 +54,7 @@ Promise.all([
 
     registry.registerDirective('foobar', template, function(self, element) {
         var store = new FileStore(files);
+        window.filestore = store;
 
         store.getElements = function() {
             return self.querySelectorAll('.listitem');
