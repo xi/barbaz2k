@@ -93,8 +93,6 @@ var createTree = function(files) {
 var FileStore = function(files) {
     var self = this;
 
-    self.items = [];
-    self.hasFocus = false;
     self.tree = createTree(files);
     self.defaultExpanded = false;
 

@@ -1,44 +1,67 @@
-/* - `items` is an array of plain objects
- * - `elements` is an array of DOMElements that correspond with the items
- * - they have the same order
- * - `update()` can be used to sync `elements` with `items`
- * - selection and focus are stored in the items
- * - treeview only changes selection and focus on items, nothing else
- * - there is an interface for adding/removing/moving items (e.g. playlist can react to changes)
- * - `!hasFocus` needs to set tabindex=0 on container
- * - `parentIndex` and `childIndex` allow for tree navigation
+/**
+ * This module containes abstract functionality for tree-/listviews.
+ * This includes:
  *
- * # events
+ * - moving focus (mouse/keybaord)
+ * - managing selection (ATM mostly keybaord)
+ * - drag and drop support
+ * - adding/removing/moving items
  *
- * - keydown/click/dblclick (on single element)
- * - click (on container for deselect)
- * - focusin/focusout (on container; focus is instantly moved to element)
- * - drag* (on single element)
- * - drop (on container)
+ * This is handled by two separate functions:
  *
- * # options
+ * - `TreeStore` is an abstract constructor for managing the underlying data.
+ * - `treeView` is a mixin for muu directives.
  *
- * - drag
- * - drop
+ * Data list stored as a plain list of arbitrary objects. They are commonly
+ * identified by their index in the list. Mapping this to a hierarhical tree
+ * structure is up to the concrete implementation, but you can use
+ * `TreeStore.parentIndex` and `TreeStore.childIndex` as a starting point.
  *
- * # drag/drop
+ * In order for this to work, the template must implement some event bindings.
+ * They all use the original event name as alias:
  *
- * circumvent browser apis, use shared data object instead
- * dragDropData should contain some information for the drop target on how to
- * use this data
+ * - on item: keydown, click, dblclick
+ * - on container: click, focusin, focusout
  *
- * - store.canDrop - can this kind of data be dropped in this treeView?
- * - store.setupData(indices) : any - return value is saved in dragDropData
- * - onDrop(dragDropData : any) - execute action based on dragDropData
+ * For drag and drop:
+ *
+ * - on item: dragstart
+ * - on container: dragover, dragleave, drop
+ *
+ * Additionally, the container should be focusable if and only if
+ * `TreeStore.hasFocus` is falsy. The items should always have `tabIndex="-1"`
+ * so they can receive focus without being in the taborder. And for items to be
+ * draggable they may need `traggable="true"`
  */
-
-// FIXME: use one store with more than one view
 
 var muu = require('muu');
 var _ = require('./lodash');
 
 
 var TreeStoreProto = function() {
+    /** List of objects that represent the data in the tree. */
+    this.items = [];
+
+    /**
+     * True if focus is currently inside of the tree.
+     *
+     * The template should make sure that the container is focusable if and
+     * only of this is false. */
+    this.hasFocus = false;
+
+    /** Update the DOM from `this.items`. */
+    this.update = function() {
+        throw new Error('Not implemented');
+    };
+
+    /**
+     * Get a list of DOM elements that correspond the items.
+     *
+     * They must be in the same order as items. */
+    this.getElements = function() {
+        throw new Error('Not implemented');
+    };
+
     this.clear = function() {
         this.items = [];
     };
@@ -87,24 +110,35 @@ var TreeStoreProto = function() {
         this.moveBefore(indices, index + 1);
     };
 
+    /** Return the index of the parent item in a tree, else -1. */
     this.parentIndex = function(index) {
         return -1;
     };
 
+    /** Return the index of the first child item in a tree, else -1. */
     this.childIndex = function(index) {
         return -1;
     };
 
+    /**
+     * Return whether the dragged data can be dropped here.
+     *
+     * Defaults to `false`. */
     this.canDrop = function(data) {
         return false;
     };
 
+    /** Provide data that will be dragged. */
     this.drag = function(index) {
-        return null;
+        throw new Error('Not implemented');
     };
 
-    this.drop = function(data, index) {};
+    /** Drop the dragged data here. */
+    this.drop = function(data, index) {
+        throw new Error('Not implemented');
+    };
 
+    /** Set focus to an item. */
     this.setFocus = function(index) {
         _.forEach(this.items, function(item, i) {
             item.focus = i === index;
@@ -112,6 +146,7 @@ var TreeStoreProto = function() {
         this.getElements()[index].focus();
     };
 
+    /** Get the indices of selected items. */
     this.getSelection = function() {
         var selection = [];
         _.forEach(this.items, function(item, index) {

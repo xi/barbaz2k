@@ -8,7 +8,6 @@ var tree = require('./tree');
 var Playlist = function(player, files) {
     var self = this;
 
-    self.items = [];
     self.element = document.createElement('div');
     self.current = 0;
 
