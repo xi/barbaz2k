@@ -60,6 +60,7 @@ Promise.all([
         };
         store.update = function() {
             var q = self.getModel('q', '').toLowerCase();
+            store.updateExpanded(q);
             this.items = store.tree.asList(q);
             self.update({
                 items: store.tree.asTree(q),
@@ -96,9 +97,7 @@ Promise.all([
             event.preventDefault();
             var element = event.currentTarget.parentNode.children[1];
             var index = _.indexOf(store.getElements(), element);
-            var item = store.items[index];
-            item.expanded = !item.expanded;
-            store.update();
+            store.toggle(index);
             store.setFocus(index);
         });
 
@@ -108,16 +107,14 @@ Promise.all([
                 var item = store.items[index];
                 if (!item.expanded) {
                     event.preventDefault();
-                    item.expanded = true;
-                    store.update();
+                    store.toggle(index, true);
                 }
             }
             if (event.keyCode === 37) {  // Left
                 var item = store.items[index];
                 if (item.dir && item.expanded) {
                     event.preventDefault();
-                    item.expanded = false;
-                    store.update();
+                    store.toggle(index, false);
                 }
             }
         });

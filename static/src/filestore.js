@@ -12,7 +12,6 @@ var TreeNode = function(path) {
         dir: true,
         path: path,
         title: _.last(path.split('/')),
-        expanded: false,
         selected: false,
     };
 
@@ -40,11 +39,11 @@ var TreeNode = function(path) {
         });
     };
 
-    this.asList = function(q) {
+    this.asList = function(q, ignoreExpanded) {
         var list = [];
         _.forEach(this.getDirs(q), function(dir) {
             list.push(dir.state);
-            if (dir.state.expanded) {
+            if (dir.state.expanded || ignoreExpanded) {
                 list = _.concat(list, dir.asList(q));
             }
         });
@@ -97,6 +96,7 @@ var FileStore = function(files) {
     self.items = [];
     self.hasFocus = false;
     self.tree = createTree(files);
+    self.defaultExpanded = false;
 
     self.parentIndex = function(index) {
         var item = self.items[index];
@@ -104,11 +104,13 @@ var FileStore = function(files) {
             return _.indexOf(i.dirs, item) !== -1 || _.indexOf(i.files, item) !== -1;
         });
     };
+
     self.childIndex = function(index) {
         var item = self.items[index];
         var childItem = item.dirs[0] || item.files[0];
         return _.indexOf(self.items, childItem);
     };
+
     self.drag = function(index) {
         var selection = self.getSelection();
         return {
@@ -117,6 +119,35 @@ var FileStore = function(files) {
                 return self.items[i].path;
             }),
         };
+    };
+
+    self.updateExpanded = function(q) {
+        // NOTE: there may be some better heuristic
+        self.defaultExpanded = q.length > 3;
+
+        var items = self.tree.asList(null, true);
+        _.forEach(items, function(item) {
+            if (item.dir) {
+                if (item._expanded === void 0) {
+                    item.expanded = self.defaultExpanded;
+                } else {
+                    item.expanded = item._expanded;
+                }
+            }
+        });
+    };
+
+    self.toggle = function(index, state) {
+        var item = self.items[index];
+        if (state === void 0) {
+            state = !item.expanded;
+        }
+        if (state === self.defaultExpanded) {
+            item._expanded = void 0;
+        } else {
+            item._expanded = state;
+        }
+        self.update();
     };
 };
 FileStore.prototype = new tree.TreeStore();
