@@ -17,18 +17,18 @@
 // normalize
 
 * {
-	box-sizing: border-box;
-	-webkit-user-select: none;
+    box-sizing: border-box;
+    -webkit-user-select: none;
 }
 a {
-	text-decoration: none;
-	color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 table {
-	color: inherit;
+    color: inherit;
 }
 *:focus {
-	outline: @highlight auto 5px;
+    outline: @highlight auto 5px;
 }
 
 // layout
@@ -37,278 +37,278 @@ table {
 .statusbar,
 .file-browser,
 .playlist {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .topbar {
-	bottom: auto;
-	height: @topbar-height;
-	background: linear-gradient(to top, #E1E6F5, #D3DAED 60%, #FDFDFE);
+    bottom: auto;
+    height: @topbar-height;
+    background: linear-gradient(to top, #E1E6F5, #D3DAED 60%, #FDFDFE);
 }
 
 .file-browser,
 .playlist {
-	top: @topbar-height;
-	bottom: @statusbar-height;
+    top: @topbar-height;
+    bottom: @statusbar-height;
 }
 
 .file-browser {
-	right: auto;
-	width: 27%;
+    right: auto;
+    width: 27%;
 }
 
 .playlist {
-	left: auto;
-	width: 73%;
-	overflow: auto;
+    left: auto;
+    width: 73%;
+    overflow: auto;
 }
 
 .statusbar {
-	top: auto;
-	height: @statusbar-height;
+    top: auto;
+    height: @statusbar-height;
 }
 
 // layout borders
 
 .statusbar {
-	border-top: 1px solid @border;
+    border-top: 1px solid @border;
 }
 .top {
-	border-bottom: 1px solid @border;
+    border-bottom: 1px solid @border;
 }
 .file-browser {
-	border-right: 1px solid @border;
+    border-right: 1px solid @border;
 }
 
 // basic colors
 
 html {
-	color: @fg1;
-	background: @bg1;
-	font-size: 14px;
+    color: @fg1;
+    background: @bg1;
+    font-size: 14px;
 }
 
 .playlist {
-	color: @fg2;
-	background: @bg2;
+    color: @fg2;
+    background: @bg2;
 }
 
 *[data-onclick][tabindex="-1"] {
-	cursor: default;
+    cursor: default;
 }
 
 // topbar
 
 .topbar {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	padding: 0 0.5em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 0.5em;
 
-	.separator {
-		display: inline-block;
-		height: @topbar-height;
-		margin: 0 0.5em;
-		border-left: 1px solid @border;
-		border-right: 1px solid #FDFDFE;
-	}
+    .separator {
+        display: inline-block;
+        height: @topbar-height;
+        margin: 0 0.5em;
+        border-left: 1px solid @border;
+        border-right: 1px solid #FDFDFE;
+    }
 
-	> *:last-child {
-		flex: auto;
-	}
+    > *:last-child {
+        flex: auto;
+    }
 }
 
 .playback-buttons,
 .volume,
 .seeker {
-	display: inline-block;
+    display: inline-block;
 }
 
 .volume,
 .seeker {
-	height: 0.6em;
-	width: 100%;
-	background: @bg1;
-	box-shadow: 1px 1px 2px @shadow inset;
-	position: relative;
-	top: -0.1em;
+    height: 0.6em;
+    width: 100%;
+    background: @bg1;
+    box-shadow: 1px 1px 2px @shadow inset;
+    position: relative;
+    top: -0.1em;
 }
 
 .volume {
-	width: 5em;
+    width: 5em;
 }
 
 .playback-buttons a {
-	display: inline-block;
-	color: white;
-	text-shadow: 1px 0 black,-1px 0 black,0 1px black,0 -1px black;
-	width: 1.5em;
-	padding: 0.2em;
-	text-align: center;
-	border: 1px solid transparent;
-	border-radius: 2px;
+    display: inline-block;
+    color: white;
+    text-shadow: 1px 0 black,-1px 0 black,0 1px black,0 -1px black;
+    width: 1.5em;
+    padding: 0.2em;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: 2px;
 
-	&:focus, &:hover {
-		border-color: @border;
-	}
+    &:focus, &:hover {
+        border-color: @border;
+    }
 }
 
 .spectrum {
-	height: 1.4em;
-	width: 8em;
-	background: black;
+    height: 1.4em;
+    width: 8em;
+    background: black;
 }
 
 // generic listitem
 
 .listitem {
-	&.is-selected.is-selected.is-selected {
-		background: @focus;
-	}
+    &.is-selected.is-selected.is-selected {
+        background: @focus;
+    }
 
-	&.drop-above {
-		border-top: 2px solid @highlight;
-	}
-	&.drop-below {
-		border-bottom: 2px solid @highlight;
-	}
+    &.drop-above {
+        border-top: 2px solid @highlight;
+    }
+    &.drop-below {
+        border-bottom: 2px solid @highlight;
+    }
 }
 
 *[tabindex="0"] .listitem.is-selected.is-selected.is-selected {
-	background: @unfocus;
+    background: @unfocus;
 }
 
 // file-browser
 
 .file-browser {
-	display: flex;
-	flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-	input {
-		width: 96%;
-		background: @bg2;
-		color: @fg2;
-		line-height: 2;
-		margin: 2%;
-	}
+    input {
+        width: 96%;
+        background: @bg2;
+        color: @fg2;
+        line-height: 2;
+        margin: 2%;
+    }
 
-	ul {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		line-height: 1.3;
-	}
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        line-height: 1.3;
+    }
 
-	li {
-		margin-left: 0.5em;
-		border-left: 1px dotted @lines;
-		padding-left: 0.9em;
-		position: relative;
+    li {
+        margin-left: 0.5em;
+        border-left: 1px dotted @lines;
+        padding-left: 0.9em;
+        position: relative;
 
-		&::before {
-			content: "";
-			position: absolute;
-			left: 0;
-			height: 0.5em;
-			width: 0.7em;
-			border-color: @lines;
-			border-style: dotted;
-			border-width: 0;
-			border-bottom-width: 1px;
-		}
+        &::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            height: 0.5em;
+            width: 0.7em;
+            border-color: @lines;
+            border-style: dotted;
+            border-width: 0;
+            border-bottom-width: 1px;
+        }
 
-		&:last-child {
-			border-left-color: transparent;
+        &:last-child {
+            border-left-color: transparent;
 
-			&::before {
-				border-left-width: 1px;
-				left: -1px;
-			}
-		}
-	}
+            &::before {
+                border-left-width: 1px;
+                left: -1px;
+            }
+        }
+    }
 
-	.filetree {
-		flex: auto;
-		overflow: auto;
+    .filetree {
+        flex: auto;
+        overflow: auto;
 
-		font-size: 12px;
-		background: @bg2;
-		color: @fg2;
-		white-space: nowrap;
+        font-size: 12px;
+        background: @bg2;
+        color: @fg2;
+        white-space: nowrap;
 
-		padding: 0.5em;
-	}
+        padding: 0.5em;
+    }
 
-	.expander {
-		position: absolute;
-		left: -0.7em;
-		vertical-align: middle;
-		text-align: center;
-		height: 11px;
-		width: 11px;
-		font-size: 9px;
-		line-height: 9px;
-		border: 1px dotted @lines;
-		background: @bg2;
-	}
+    .expander {
+        position: absolute;
+        left: -0.7em;
+        vertical-align: middle;
+        text-align: center;
+        height: 11px;
+        width: 11px;
+        font-size: 9px;
+        line-height: 9px;
+        border: 1px dotted @lines;
+        background: @bg2;
+    }
 }
 
 .art {
-	background-repeat: no-repeat;
-	background-color: @bg2;
-	background-position: 50%;
-	background-size: contain;
-	min-height: 10em;
+    background-repeat: no-repeat;
+    background-color: @bg2;
+    background-position: 50%;
+    background-size: contain;
+    min-height: 10em;
 }
 
 // playlist
 
 .playlist {
-	.listitem {
-		float: left;
-		width: 100%;
-		position: relative;
-		clear: both;
+    .listitem {
+        float: left;
+        width: 100%;
+        position: relative;
+        clear: both;
 
-		line-height: 1.5;
+        line-height: 1.5;
 
-		&:nth-child(even) {
-			background: mix(@bg2, @fg2, 96%);
-		}
-	}
+        &:nth-child(even) {
+            background: mix(@bg2, @fg2, 96%);
+        }
+    }
 
-	.playlist-item-playing,
-	.playlist-item-title,
-	.playlist-item-artist,
-	.playlist-item-duration {
-		position: relative;
-		float: left;
-		left: 100%;
+    .playlist-item-playing,
+    .playlist-item-title,
+    .playlist-item-artist,
+    .playlist-item-duration {
+        position: relative;
+        float: left;
+        left: 100%;
 
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
-	}
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
 
-	.playlist-item-playing {
-		width: 5%;
-		margin-left: -99%;
-	}
-	.playlist-item-title {
-		width: 46%;
-		margin-left: -93%;
-	}
-	.playlist-item-artist {
-		width: 36%;
-		margin-left: -46%;
-	}
-	.playlist-item-duration {
-		width: 8%;
-		margin-left: -9%;
-		text-align: right;
-	}
+    .playlist-item-playing {
+        width: 5%;
+        margin-left: -99%;
+    }
+    .playlist-item-title {
+        width: 46%;
+        margin-left: -93%;
+    }
+    .playlist-item-artist {
+        width: 36%;
+        margin-left: -46%;
+    }
+    .playlist-item-duration {
+        width: 8%;
+        margin-left: -9%;
+        text-align: right;
+    }
 }
