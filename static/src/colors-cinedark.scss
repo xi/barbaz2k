@@ -8,7 +8,7 @@ $border: darken($bg1, 5%);
 $line: desaturate(mix($bg2, $fg2, 30%), 90%);
 $shadow: $dark;
 $select: saturate(mix($bg2, $fg2, 40%), 15%);
-$select-text: contrast($select, $dark, $light, 35%);
+$select-text: contrast($select, $dark, $light);
 $select-inactive: mix($select, $bg2, 80%);
 $focus: saturate(mix($bg2, $select), 100%);
 

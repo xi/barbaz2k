@@ -1,13 +1,6 @@
 // variables
 
-@function contrast($base, $dark, $light, $threshold: 43%) {
-    @if lightness($base) > abs($threshold) / 100 {
-        @return $dark;
-    } @else {
-        @return $light;
-    }
-}
-
+@import "functions";
 @import "colors";
 
 $topbar-height: 2rem;

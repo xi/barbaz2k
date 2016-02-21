@@ -9,7 +9,7 @@ $fg2: gold;  // change me!
 $dark: black;
 $light: white;
 $bg1: #FDFDFD;
-$bg2: contrast($fg2, $dark, $bg1, 24%);
+$bg2: contrast($fg2, $dark, $bg1);
 $fg1: contrast($bg1, $dark, $light);
 $border: desaturate(mix($bg1, $fg1, 30%), 90%);
 $line: desaturate(mix($bg2, $fg2, 30%), 90%);
