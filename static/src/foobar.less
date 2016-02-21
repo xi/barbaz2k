@@ -1,17 +1,8 @@
 // variables
 
-@bg1: #FDFDFD;
-@bg2: black;
-@fg1: black;
-@fg2: white;
-@border: #878B93;
-@lines: #E0E0E0;
-@shadow: black;
-@highlight: #006FA5;
-@focus: #595959;
-@unfocus: #2A2A2A;
+@import "colors.less";
 
-@topbar-height: 1.8em;
+@topbar-height: 2em;
 @statusbar-height: 1.5em;
 
 // normalize
@@ -28,7 +19,7 @@ table {
     color: inherit;
 }
 *:focus {
-    outline: @highlight auto 5px;
+    outline: @focus auto 5px;
 }
 
 // layout
@@ -47,7 +38,7 @@ table {
 .topbar {
     bottom: auto;
     height: @topbar-height;
-    background: linear-gradient(to top, #E1E6F5, #D3DAED 60%, #FDFDFE);
+    z-index: 3;
 }
 
 .file-browser,
@@ -59,25 +50,29 @@ table {
 .file-browser {
     right: auto;
     width: 27%;
+    z-index: 1;
 }
 
 .playlist {
     left: auto;
     width: 73%;
     overflow: auto;
+    z-index: 0;
 }
 
 .statusbar {
     top: auto;
     height: @statusbar-height;
+    z-index: 2;
 }
 
 // layout borders
 
+.art,
 .statusbar {
     border-top: 1px solid @border;
 }
-.top {
+.topbar {
     border-bottom: 1px solid @border;
 }
 .file-browser {
@@ -92,9 +87,15 @@ html {
     font-size: 14px;
 }
 
-.playlist {
+.playlist,
+.filetree,
+input {
     color: @fg2;
     background: @bg2;
+}
+input {
+    border: 0;
+    box-shadow: 1px 1px 3px @shadow inset;
 }
 
 *[data-onclick][tabindex="-1"] {
@@ -132,8 +133,7 @@ html {
 .seeker {
     height: 0.6em;
     width: 100%;
-    background: @bg1;
-    box-shadow: 1px 1px 2px @shadow inset;
+    background: @bg2;
     position: relative;
     top: -0.1em;
 }
@@ -144,8 +144,6 @@ html {
 
 .playback-buttons a {
     display: inline-block;
-    color: white;
-    text-shadow: 1px 0 black,-1px 0 black,0 1px black,0 -1px black;
     width: 1.5em;
     padding: 0.2em;
     text-align: center;
@@ -160,26 +158,27 @@ html {
 .spectrum {
     height: 1.4em;
     width: 8em;
-    background: black;
+    background: @bg2;
 }
 
 // generic listitem
 
 .listitem {
     &.is-selected.is-selected.is-selected {
-        background: @focus;
+        background: @select;
+        color: @select-text;
     }
 
     &.drop-above {
-        border-top: 2px solid @highlight;
+        border-top: 2px solid @focus;
     }
     &.drop-below {
-        border-bottom: 2px solid @highlight;
+        border-bottom: 2px solid @focus;
     }
 }
 
 *[tabindex="0"] .listitem.is-selected.is-selected.is-selected {
-    background: @unfocus;
+    background: @select-inactive;
 }
 
 // file-browser
@@ -190,8 +189,6 @@ html {
 
     input {
         width: 96%;
-        background: @bg2;
-        color: @fg2;
         line-height: 2;
         margin: 2%;
     }
@@ -205,7 +202,7 @@ html {
 
     li {
         margin-left: 0.5em;
-        border-left: 1px dotted @lines;
+        border-left: 1px dotted @line;
         padding-left: 0.9em;
         position: relative;
 
@@ -215,7 +212,7 @@ html {
             left: 0;
             height: 0.5em;
             width: 0.7em;
-            border-color: @lines;
+            border-color: @line;
             border-style: dotted;
             border-width: 0;
             border-bottom-width: 1px;
@@ -236,8 +233,6 @@ html {
         overflow: auto;
 
         font-size: 12px;
-        background: @bg2;
-        color: @fg2;
         white-space: nowrap;
 
         padding: 0.5em;
@@ -252,7 +247,7 @@ html {
         width: 11px;
         font-size: 9px;
         line-height: 9px;
-        border: 1px dotted @lines;
+        border: 1px dotted @line;
         background: @bg2;
     }
 }

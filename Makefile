@@ -3,7 +3,7 @@ all: static/foobar.css static/foobar.min.js
 run: all
 	. .env/bin/activate && python server.py
 
-static/foobar.css: static/src/foobar.less .env
+static/foobar.css: static/src/foobar.less static/src/colors.less .env
 	. .env/bin/activate && lessc $< > $@
 
 static/foobar.min.js: static/foobar.js .env
