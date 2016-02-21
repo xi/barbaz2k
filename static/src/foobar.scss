@@ -10,8 +10,8 @@
 
 @import "colors";
 
-$topbar-height: 2em;
-$statusbar-height: 1.5em;
+$topbar-height: 2rem;
+$statusbar-height: 1.5rem;
 
 // normalize
 
@@ -320,5 +320,6 @@ input {
 
 .statusbar {
     font-size: small;
-    padding: 0 2px;
+    line-height: $statusbar-height;
+    padding: 0 0.2em;
 }
