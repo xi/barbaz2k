@@ -155,10 +155,16 @@ var Playlist = function(player, files) {
         self.dispatchEvent('change');
     };
 
-    // FIXME: memory leak
-    muu.$.on(player, 'ended', self.next);
-    muu.$.on(player, 'play', updateStatus);
-    muu.$.on(player, 'pause', updateStatus);
+    var unregister = [];
+    unregister.push(muu.$.on(player, 'ended', self.next));
+    unregister.push(muu.$.on(player, 'play', updateStatus));
+    unregister.push(muu.$.on(player, 'pause', updateStatus));
+
+    self.destroy = function() {
+        _.forEach(unregister, function(fn) {
+            fn();
+        });
+    };
 };
 Playlist.prototype = new tree.TreeStore();
 

@@ -70,11 +70,6 @@ Promise.all([
             });
         };
 
-        // for updating cover art
-        muu.$.on(player, 'play', function() {
-            store.update()
-        });
-
         self.on('activate', function(event) {
             event.preventDefault();
             if (event.ctrlKey) {
@@ -121,6 +116,11 @@ Promise.all([
         });
 
         tree.treeView(self, element, store);
+
+        // for updating cover art
+        return muu.$.on(player, 'play', function() {
+            store.update()
+        });
     });
 
     registry.registerDirective('playlist', playlistTpl, function(self, element) {
@@ -134,8 +134,6 @@ Promise.all([
             });
         };
 
-        playlist.on('change', playlist.update);
-
         tree.treeView(self, element, playlist);
 
         self.on('activate', function(event) {
@@ -143,6 +141,8 @@ Promise.all([
             var index = _.indexOf(playlist.getElements(), event.currentTarget);
             playlist.play(index);
         });
+
+        return playlist.on('change', playlist.update);
     });
 
     var sliderTpl = '<input class="{{class}}" ' +
@@ -161,12 +161,12 @@ Promise.all([
             class: 'seeker',
         });
 
-        muu.$.on(player, 'timeupdate', function() {
-            self.setModel('value', player.currentTime / player.duration * 500);
-        });
-
         self.on('change', function(event) {
             player.currentTime = player.duration * self.getModel('value') / 500;
+        });
+
+        return muu.$.on(player, 'timeupdate', function() {
+            self.setModel('value', player.currentTime / player.duration * 500);
         });
     });
 
@@ -177,12 +177,12 @@ Promise.all([
             class: 'volume',
         });
 
-        muu.$.on(player, 'volumechange', function() {
-            self.setModel('value', player.volume * 100);
-        });
-
         self.on('change', function(event) {
             player.volume = self.getModel('value') / 100;
+        });
+
+        return muu.$.on(player, 'volumechange', function() {
+            self.setModel('value', player.volume * 100);
         });
     });
 
@@ -270,10 +270,18 @@ Promise.all([
         };
 
         update();
-        playlist.on('change', update);
-        muu.$.on(player, 'timeupdate', update);
-        muu.$.on(player, 'play', update);
-        muu.$.on(player, 'pause', update);
+
+        var unregister = [];
+        unregister.push(playlist.on('change', update));
+        unregister.push(muu.$.on(player, 'timeupdate', update));
+        unregister.push(muu.$.on(player, 'play', update));
+        unregister.push(muu.$.on(player, 'pause', update));
+
+        return function() {
+            _.forEach(unregister, function(fn) {
+                fn();
+            });
+        };
     });
 
     registry.linkAll(document);
