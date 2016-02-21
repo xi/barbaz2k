@@ -3,8 +3,8 @@ all: static/foobar.css static/foobar.min.js
 run: all
 	. .env/bin/activate && python server.py
 
-static/foobar.css: static/src/foobar.less static/src/colors.less .env
-	. .env/bin/activate && lessc $< > $@
+static/foobar.css: static/src/foobar.scss static/src/colors.scss .env
+	. .env/bin/activate && node-sass $< $@
 
 static/foobar.min.js: static/foobar.js .env
 	. .env/bin/activate && cd static && uglifyjs --source-map foobar.js.map foobar.js -o foobar.min.js
@@ -22,7 +22,7 @@ static/src/lodash.js: .env
 	echo lodash-cli > node_deps
 	echo browserify >> node_deps
 	echo uglifyjs >> node_deps
-	echo less >> node_deps
+	echo node-sass >> node_deps
 	echo mustache >> node_deps
 	echo xi/muu >> node_deps
 	echo wildlyinaccurate/promise-xhr >> node_deps

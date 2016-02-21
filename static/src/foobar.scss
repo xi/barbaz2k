@@ -1,9 +1,17 @@
 // variables
 
-@import "colors.less";
+@function contrast($base, $dark, $light, $threshold: 43%) {
+    @if lightness($base) > abs($threshold) / 100 {
+        @return $dark;
+    } @else {
+        @return $light;
+    }
+}
 
-@topbar-height: 2em;
-@statusbar-height: 1.5em;
+@import "colors";
+
+$topbar-height: 2em;
+$statusbar-height: 1.5em;
 
 // normalize
 
@@ -19,8 +27,8 @@ table {
     color: inherit;
 }
 *:focus {
-    outline: @focus solid 2px;
-    outline: @focus auto 5px;
+    outline: $focus solid 2px;
+    outline: $focus auto 5px;
 }
 
 // layout
@@ -38,14 +46,14 @@ table {
 
 .topbar {
     bottom: auto;
-    height: @topbar-height;
+    height: $topbar-height;
     z-index: 3;
 }
 
 .file-browser,
 .playlist {
-    top: @topbar-height;
-    bottom: @statusbar-height;
+    top: $topbar-height;
+    bottom: $statusbar-height;
 }
 
 .file-browser {
@@ -63,7 +71,7 @@ table {
 
 .statusbar {
     top: auto;
-    height: @statusbar-height;
+    height: $statusbar-height;
     z-index: 2;
 }
 
@@ -71,32 +79,32 @@ table {
 
 .art,
 .statusbar {
-    border-top: 1px solid @border;
+    border-top: 1px solid $border;
 }
 .topbar {
-    border-bottom: 1px solid @border;
+    border-bottom: 1px solid $border;
 }
 .file-browser {
-    border-right: 1px solid @border;
+    border-right: 1px solid $border;
 }
 
 // basic colors
 
 html {
-    color: @fg1;
-    background: @bg1;
+    color: $fg1;
+    background: $bg1;
     font-size: 14px;
 }
 
 .playlist,
 .filetree,
 input {
-    color: @fg2;
-    background: @bg2;
+    color: $fg2;
+    background: $bg2;
 }
 input {
     border: 0;
-    box-shadow: 1px 1px 3px @shadow inset;
+    box-shadow: 1px 1px 3px $shadow inset;
 }
 
 *[data-onclick][tabindex="-1"] {
@@ -113,9 +121,9 @@ input {
 
     .separator {
         display: inline-block;
-        height: @topbar-height;
+        height: $topbar-height;
         margin: 0 0.5em;
-        border-left: 1px solid @border;
+        border-left: 1px solid $border;
         border-right: 1px solid #FDFDFE;
     }
 
@@ -134,7 +142,7 @@ input {
 .seeker {
     height: 0.6em;
     width: 100%;
-    background: @bg2;
+    background: $bg2;
     position: relative;
     top: -0.1em;
 }
@@ -152,35 +160,35 @@ input {
     border-radius: 2px;
 
     &:focus, &:hover {
-        border-color: @border;
+        border-color: $border;
     }
 }
 
 .spectrum {
     height: 1.4em;
     width: 8em;
-    background: @bg2;
-    color: @fg2;
+    background: $bg2;
+    color: $fg2;
 }
 
 // generic listitem
 
 .listitem {
     &.is-selected.is-selected.is-selected {
-        background: @select;
-        color: @select-text;
+        background: $select;
+        color: $select-text;
     }
 
     &.drop-above {
-        border-top: 2px solid @focus;
+        border-top: 2px solid $focus;
     }
     &.drop-below {
-        border-bottom: 2px solid @focus;
+        border-bottom: 2px solid $focus;
     }
 }
 
 *[tabindex="0"] .listitem.is-selected.is-selected.is-selected {
-    background: @select-inactive;
+    background: $select-inactive;
 }
 
 // file-browser
@@ -204,7 +212,7 @@ input {
 
     li {
         margin-left: 0.5em;
-        border-left: 1px dotted @line;
+        border-left: 1px dotted $line;
         padding-left: 0.9em;
         position: relative;
 
@@ -214,7 +222,7 @@ input {
             left: 0;
             height: 0.5em;
             width: 0.7em;
-            border-color: @line;
+            border-color: $line;
             border-style: dotted;
             border-width: 0;
             border-bottom-width: 1px;
@@ -249,14 +257,14 @@ input {
         width: 11px;
         font-size: 9px;
         line-height: 9px;
-        border: 1px dotted @line;
-        background: @bg2;
+        border: 1px dotted $line;
+        background: $bg2;
     }
 }
 
 .art {
     background-repeat: no-repeat;
-    background-color: @bg2;
+    background-color: $bg2;
     background-position: 50%;
     background-size: contain;
     min-height: 10em;
@@ -272,7 +280,7 @@ input {
         line-height: 1.5;
 
         &:nth-child(even) {
-            background: mix(@bg2, @fg2, 96%);
+            background: mix($bg2, $fg2, 96%);
         }
     }
 
