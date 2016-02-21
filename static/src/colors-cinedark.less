@@ -1,0 +1,17 @@
+@dark: black;
+@light: white;
+@bg1: #224153;  // change me!
+@bg2: @bg1;
+@fg1: contrast(@bg1, @dark, @light);
+@fg2: contrast(@bg2, @dark, @light);
+@border: mix(@bg1, @fg1, 105%);
+@line: desaturate(mix(@bg2, @fg2, 30%), 90%);
+@shadow: @dark;
+@select: saturate(mix(@bg2, @fg2, 40%), 15%);
+@select-text: contrast(@select, @dark, @light, 35%);
+@select-inactive: mix(@select, @bg2, 80%);
+@focus: saturate(mix(@bg2, @select), 100%);
+
+.topbar {
+    background: linear-gradient(to bottom, mix(@bg1, @fg1, 70%), @bg1);
+}
