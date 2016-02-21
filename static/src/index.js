@@ -16,6 +16,25 @@ var formatTime = function(duration) {
     return s;
 };
 
+var int2hex = function(i) {
+    return ('00' + i.toString(16)).substr(-2);
+};
+
+var sniffColor = function(className, key) {
+    var el = document.createElement('div');
+    el.className = className;
+    document.body.appendChild(el);
+
+    var style = window.getComputedStyle(el, null);
+    var rgb = style.getPropertyValue(key).match(/\d+/g);
+    var r = int2hex(parseInt(rgb[0]));
+    var g = int2hex(parseInt(rgb[1]));
+    var b = int2hex(parseInt(rgb[2]));
+
+    document.body.removeChild(el);
+    return '#' + r + g + b;
+}
+
 Promise.all([
     xhr.get('/static/templates/foobar.html'),
     xhr.get('/static/templates/filetree.html'),
@@ -214,6 +233,9 @@ Promise.all([
     registry.registerDirective('spectrum', '', function(self, element) {
         self.update({});
 
+        var color1 = sniffColor('spectrum', 'color');
+        var color2 = sniffColor('listitem is-selected', 'background-color');
+
         var canvas = document.createElement('canvas');
         canvas.className = 'spectrum';
         element.appendChild(canvas);
@@ -244,8 +266,8 @@ Promise.all([
                 var y1 = canvas.height;
 
                 var gradient = ctx.createLinearGradient(0, y0, 0, y1);
-                gradient.addColorStop(0, "white");
-                gradient.addColorStop(1, "#006FA5");
+                gradient.addColorStop(0, color1);
+                gradient.addColorStop(1, color2);
                 ctx.fillStyle = gradient;
 
                 ctx.fillRect(x, y0, width, y1);
