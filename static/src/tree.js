@@ -332,7 +332,6 @@ var treeView = function(self, element, store) {
     });
 
     self.on('focusin', function(event) {
-        // FIXME: focus expander
         var root = event.currentTarget;
         var previous = event.relatedTarget;
 
@@ -343,11 +342,11 @@ var treeView = function(self, element, store) {
             if (index === -1) {
                 index = _.findIndex(store.items, 'focus');
             }
-            if (index === -1) {
+            if (index === -1 && event.target === root) {
                 index = 0;
             }
 
-            if (index < elements.length) {
+            if (index !== -1 && index < elements.length) {
                 store.setFocus(index);
             }
 
