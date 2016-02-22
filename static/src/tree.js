@@ -66,48 +66,69 @@ var TreeStoreProto = function() {
         this.items = [];
     };
 
-    this.insertBefore = function(items, index) {
+    this.insertBefore = function(items, index, focus) {
         this.items.splice.apply(this.items, [index, 0].concat(items));
+        if (!focus || focus < 0) {
+            focus = 0;
+        }
+        this.setFocus(focus + index);
+        this.setSelection([focus + index]);
     };
 
-    this.insertAfter = function(items, index) {
-        this.insertBefore(items, index + 1);
+    this.insertAfter = function(items, index, focus) {
+        this.insertBefore(items, index + 1, focus);
     };
 
-    this.append = function(items) {
-        this.insertAfter(items, this.items.length - 1);
+    this.append = function(items, focus) {
+        this.insertAfter(items, this.items.length - 1, focus);
     };
 
     this.remove = function(indices) {
+        var self = this;
+
         var pop = function(arr, i) {
             return arr.splice(i, 1)[0];
         };
 
         var done = [];
         var removed = [];
+        var focusIndex = self.getFocus();
 
-        for (var i = 0; i < indices.length; i++) {
-            var index = indices[i];
-            index -= done.filter(function(i) {
-                return p < index;
+        var updateIndex = function(index) {
+            return index - _.filter(done, function(i) {
+                return i < index;
             }).length;
-            removed.push(pop(this.items, index))
-            done.push(indices[i]);
-        }
+        };
+
+        _.forEach(indices, function(index) {
+            var _index = updateIndex(index);
+            var item = pop(self.items, _index);
+            item.focus = false;
+            item.selected = false;
+            removed.push(item);
+            done.push(index);
+        });
+
+        focusIndex = updateIndex(focusIndex);
+        focusIndex = Math.max(0, focusIndex);
+        focusIndex = Math.min(self.items.length - 1, focusIndex);
+        focusIndex = Math.min(self.getElements().length - 1, focusIndex);
+        self.setFocus(focusIndex);
+        self.setSelection([focusIndex]);
 
         return removed;
     };
 
-    this.moveBefore = function(indices, index) {
+    this.moveBefore = function(indices, index, focus) {
         var items = this.remove(indices);
         index -= _.filter(indices, function(i) {
             return i < index;
         }).length;
-        this.insertBefore(items, index);
+        this.insertBefore(items, index, focus);
     };
 
-    this.moveAfter = function(indices, index) {
-        this.moveBefore(indices, index + 1);
+    this.moveAfter = function(indices, index, focus) {
+        this.moveBefore(indices, index + 1, focus);
     };
 
     /** Return the index of the parent item in a tree, else -1. */
@@ -138,12 +159,20 @@ var TreeStoreProto = function() {
         throw new Error('Not implemented');
     };
 
+    /** Get index of the focused item. */
+    this.getFocus = function() {
+        return _.findIndex(this.items, 'focus');
+    };
+
     /** Set focus to an item. */
     this.setFocus = function(index) {
         _.forEach(this.items, function(item, i) {
             item.focus = i === index;
         });
-        this.getElements()[index].focus();
+        var element = this.getElements()[index];
+        if (element) {
+            element.focus();
+        }
     };
 
     /** Get the indices of selected items. */
@@ -155,6 +184,13 @@ var TreeStoreProto = function() {
             }
         });
         return selection;
+    };
+
+    /** Select items based on a list of indices. */
+    this.setSelection = function(indices) {
+        _.forEach(this.items, function(item, index) {
+            item.selected = _.indexOf(indices, index) !== -1;
+        });
     };
 };
 
@@ -340,7 +376,7 @@ var treeView = function(self, element, store) {
             var index = _.indexOf(elements, event.target);
 
             if (index === -1) {
-                index = _.findIndex(store.items, 'focus');
+                index = store.getFocus();
             }
             if (index === -1 && event.target === root) {
                 index = 0;

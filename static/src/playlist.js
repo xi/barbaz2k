@@ -32,32 +32,20 @@ var Playlist = function(player, files) {
         player.src = null;
     };
 
-    self.insertBefore = function(items, index) {
+    self.insertBefore = function(items, index, focus) {
         // FIXME calculate self.current if it is moved itself
         if (index <= self.current) {
             self.current += items.length;
         }
-        self.items.splice.apply(self.items, [index, 0].concat(items));
+
+        tree.TreeStore.prototype.insertBefore.call(self, items, index, focus);
         self.dispatchEvent('change');
     };
 
     self.remove = function(indices) {
-        var pop = function(arr, i) {
-            return arr.splice(i, 1)[0];
-        };
+        var removed = tree.TreeStore.prototype.remove.call(self, indices);
 
-        var done = [];
-        var removed = [];
-
-        for (var i = 0; i < indices.length; i++) {
-            var index = indices[i];
-            index -= _.filter(done, function(i) {
-                return i < index;
-            }).length;
-            removed.push(pop(self.items, index))
-            done.push(indices[i]);
-        }
-        self.current -= _.filter(done, function(i) {
+        self.current -= _.filter(indices, function(i) {
             return i < self.current;
         }).length;
 
@@ -90,12 +78,12 @@ var Playlist = function(player, files) {
         });
     };
 
-    self.insertUriBefore = function(uris, index) {
-        self.insertBefore(self.uris2items(uris), index);
+    self.insertUriBefore = function(uris, index, focus) {
+        self.insertBefore(self.uris2items(uris), index, focus);
     };
 
-    self.appendUri = function(uris) {
-        self.append(self.uris2items(uris));
+    self.appendUri = function(uris, focus) {
+        self.append(self.uris2items(uris), focus);
     };
 
     self.play = function(i) {
@@ -112,10 +100,11 @@ var Playlist = function(player, files) {
     };
 
     self.drag = function(index) {
+        var selection = self.getSelection();
         return {
             origin: 'playlist',
-            focus: index,
-            selection: self.getSelection(),
+            focus: _.indexOf(selection, index),
+            selection: selection,
         };
     };
 
@@ -131,14 +120,11 @@ var Playlist = function(player, files) {
 
     self.drop = function(data, index) {
         if (data.origin === 'playlist') {
-            self.moveBefore(data.selection, index);
+            self.moveBefore(data.selection, index, data.focus);
             self.update();
-            // FIXME: index has changed in moveBefore
-            self.setFocus(data.index);
         } else if (data.origin === 'filelist') {
-            self.insertUriBefore(data.uris, index);
+            self.insertUriBefore(data.uris, index, data.focus);
             self.update();
-            // FIXME: set focus
         }
     };
 
