@@ -129,13 +129,13 @@ var Playlist = function(player, files) {
     };
 
     var updateStatus = function() {
-        _.forEach(self.items, function(row, i) {
+        _.forEach(self.items, function(item, i) {
             if (i === self.current) {
-                row.playing = !player.paused;
-                row.paused = player.paused;
+                item.playing = !player.paused;
+                item.paused = player.paused;
             } else {
-                row.playing = false;
-                row.paused = false;
+                item.playing = false;
+                item.paused = false;
             }
         });
         self.dispatchEvent('change');
