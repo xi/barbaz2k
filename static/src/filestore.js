@@ -74,7 +74,7 @@ var createTree = function(files) {
             });
             if (!item) {
                 item = new TreeNode(_parts.join('/'));
-                head.dirs.push(item)
+                head.dirs.push(item);
             }
             head = item;
         });

@@ -130,7 +130,7 @@ var Playlist = function(player, files) {
         player._loaded = false;
         updateStatus();
         self.dispatchEvent('change');
-    }
+    };
 
     self.drag = function(index) {
         var selection = self.getSelection();

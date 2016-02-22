@@ -210,7 +210,7 @@ var treeView = function(self, element, store) {
         if (event.keyCode === 40) {  // Down
             return index + 1;
         } else if (event.keyCode === 38) {  // Up
-            return index - 1
+            return index - 1;
         } else if (event.keyCode === 39) {  // Right
             if (store.childIndex && !event.defaultPrevented) {
                 var childIndex = store.childIndex(index);
@@ -226,7 +226,7 @@ var treeView = function(self, element, store) {
                 }
             }
         } else if (event.keyCode === 36) {  // Home
-            return 0
+            return 0;
         } else if (event.keyCode === 35) {  // End
             return siblings.length - 1;
         } else if (event.keyCode === 34) {  // PageDown
@@ -414,7 +414,7 @@ var treeView = function(self, element, store) {
 
     var getDragIndex = function(event) {
         var element = _.last(_.filter(store.getElements(), function(el) {
-            var rect = el.getBoundingClientRect()
+            var rect = el.getBoundingClientRect();
             return (rect.top + rect.bottom) / 2 < event.clientY;
         }));
 

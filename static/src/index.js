@@ -11,7 +11,7 @@ var FileStore = require('./filestore');
 var formatTime = function(duration) {
     var s = '';
     s += Math.floor(duration / 60) || 0;
-    s += ':'
+    s += ':';
     s += ('00' + Math.floor(duration) % 60).slice(-2);
     return s;
 };
@@ -33,7 +33,7 @@ var sniffColor = function(className, key) {
 
     document.body.removeChild(el);
     return '#' + r + g + b;
-}
+};
 
 Promise.all([
     xhr.get('/static/templates/foobar.html'),
@@ -43,7 +43,7 @@ Promise.all([
     xhr.getJSON('/files.json'),
 ]).then(function(args) {
     var template = args[0];
-    var buttonsTpl = args[2]
+    var buttonsTpl = args[2];
     var playlistTpl = args[3];
     var files = args[4];
 
@@ -119,15 +119,16 @@ Promise.all([
 
         self.on('keydown', function(event) {
             var index = _.indexOf(store.getElements(), event.currentTarget);
+            var item;
             if (event.keyCode === 39) {  // Right
-                var item = store.items[index];
+                item = store.items[index];
                 if (!item.expanded) {
                     event.preventDefault();
                     store.toggle(index, true);
                 }
             }
             if (event.keyCode === 37) {  // Left
-                var item = store.items[index];
+                item = store.items[index];
                 if (item.dir && item.expanded) {
                     event.preventDefault();
                     store.toggle(index, false);
@@ -139,7 +140,7 @@ Promise.all([
 
         // for updating cover art
         return muu.$.on(player, 'play', function() {
-            store.update()
+            store.update();
         });
     });
 
