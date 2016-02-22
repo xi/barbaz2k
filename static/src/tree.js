@@ -240,7 +240,7 @@ var treeView = function(self, element, store) {
         var index = _.indexOf(store.getElements(), event.currentTarget);
         var newIndex = getKeyIndex(event);
 
-        if (newIndex !== undefined) {
+        if (newIndex !== undefined && !event.altKey) {
             event.preventDefault();
 
             newIndex = Math.min(store.items.length - 1, Math.max(0, newIndex));
@@ -261,56 +261,60 @@ var treeView = function(self, element, store) {
 
             store.update();
             store.setFocus(newIndex);
-        } else if (event.keyCode === 32) {
-            event.preventDefault();
-            if (event.ctrlKey) {
-                store.items[index].selected = !store.items[index].selected;
-            } else {
-                _.forEach(store.items, function(item, i) {
-                    item.selected = i === index;
-                });
-            }
-            store.update();
-        } else if (event.keyCode === 16) {
-            event.preventDefault();
-            initialShiftIndex = index;
-        } else if (event.keyCode === 13) {
+        } else if (event.keyCode === 13) {  // enter
             event.preventDefault();
             var ev = muu.$.createEvent(
                 'muu-activate', undefined, undefined, event);
             element.dispatchEvent(ev);
-        } else if (event.keyCode === 46) {  // delete
-            event.preventDefault();
-            store.remove(store.getSelection());
-            store.update();
-        } else if (event.keyCode == 88 && event.ctrlKey) {  // ctrl-x
-            event.preventDefault();
-            clipboard = store.remove(store.getSelection());
-            _.forEach(clipboard, function(item) {
-                item.focus = false;
-                item.selected = false;
-            });
-        } else if (event.keyCode == 67 && event.ctrlKey) {  // ctrl-c
-            event.preventDefault();
-            clipboard = _.map(store.getSelection(), function(i) {
-                return store.items[i];
-            });
-            _.forEach(clipboard, function(item) {
-                item.focus = false;
-                item.selected = false;
-            });
-        } else if (event.keyCode == 86 && event.ctrlKey) {  // ctrl-v
-            event.preventDefault();
-            if (clipboard) {
-                store.insertAfter(_.map(clipboard, function(i) {
-                    return _.clone(i);
-                }), index);
+        } else if (!event.ctrlKey && !event.altKey) {
+            if (event.keyCode === 32) {
+                event.preventDefault();
+                if (event.ctrlKey) {
+                    store.items[index].selected = !store.items[index].selected;
+                } else {
+                    _.forEach(store.items, function(item, i) {
+                        item.selected = i === index;
+                    });
+                }
+                store.update();
+            } else if (event.keyCode === 16) {  // shift
+                event.preventDefault();
+                initialShiftIndex = index;
+            } else if (event.keyCode === 46) {  // delete
+                event.preventDefault();
+                store.remove(store.getSelection());
+                store.update();
+            } else if (event.keyCode == 88 && event.ctrlKey) {  // ctrl-x
+                event.preventDefault();
+                clipboard = store.remove(store.getSelection());
+                _.forEach(clipboard, function(item) {
+                    item.focus = false;
+                    item.selected = false;
+                });
             }
-        } else if (event.keyCode == 65 && event.ctrlKey) {  // ctrl-a
-            _.forEach(store.items, function(item) {
-                item.selected = true;
-            });
-            store.update();
+        } else if (event.ctrlKey && !event.altKey) {
+            if (event.keyCode == 67) {  // ctrl-c
+                event.preventDefault();
+                clipboard = _.map(store.getSelection(), function(i) {
+                    return store.items[i];
+                });
+                _.forEach(clipboard, function(item) {
+                    item.focus = false;
+                    item.selected = false;
+                });
+            } else if (event.keyCode == 86) {  // ctrl-v
+                event.preventDefault();
+                if (clipboard) {
+                    store.insertAfter(_.map(clipboard, function(i) {
+                        return _.clone(i);
+                    }), index);
+                }
+            } else if (event.keyCode == 65) {  // ctrl-a
+                _.forEach(store.items, function(item) {
+                    item.selected = true;
+                });
+                store.update();
+            }
         }
     });
 

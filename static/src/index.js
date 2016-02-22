@@ -120,18 +120,19 @@ Promise.all([
         self.on('keydown', function(event) {
             var index = _.indexOf(store.getElements(), event.currentTarget);
             var item;
-            if (event.keyCode === 39) {  // Right
-                item = store.items[index];
-                if (!item.expanded) {
-                    event.preventDefault();
-                    store.toggle(index, true);
-                }
-            }
-            if (event.keyCode === 37) {  // Left
-                item = store.items[index];
-                if (item.dir && item.expanded) {
-                    event.preventDefault();
-                    store.toggle(index, false);
+            if (!event.ctrlKey && !event.altKey) {
+                if (event.keyCode === 39) {  // Right
+                    item = store.items[index];
+                    if (!item.expanded) {
+                        event.preventDefault();
+                        store.toggle(index, true);
+                    }
+                } else if (event.keyCode === 37) {  // Left
+                    item = store.items[index];
+                    if (item.dir && item.expanded) {
+                        event.preventDefault();
+                        store.toggle(index, false);
+                    }
                 }
             }
         });
