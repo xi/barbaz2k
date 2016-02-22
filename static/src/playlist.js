@@ -9,7 +9,20 @@ var Playlist = function(player, files) {
     var self = this;
 
     self.element = document.createElement('div');
-    self.current = 0;
+    self.current = -1;
+
+    var updateStatus = function() {
+        _.forEach(self.items, function(item, i) {
+            if (i === self.current) {
+                item.playing = !player.paused;
+                item.paused = player.paused;
+            } else {
+                item.playing = false;
+                item.paused = false;
+            }
+        });
+        self.dispatchEvent('change');
+    };
 
     self.dispatchEvent = function(name, data) {
         var event = muu.$.createEvent(name, undefined, undefined, data);
@@ -25,29 +38,36 @@ var Playlist = function(player, files) {
     };
 
     self.clear = function() {
-        self.current = 0;
+        self.stop();
         self.items = [];
         self.dispatchEvent('clear');
-        self.dispatchEvent('change');
-        player.src = null;
     };
 
     self.insertBefore = function(items, index, focus) {
-        // FIXME calculate self.current if it is moved itself
+        tree.TreeStore.prototype.insertBefore.call(self, items, index, focus);
+
         if (index <= self.current) {
             self.current += items.length;
         }
 
-        tree.TreeStore.prototype.insertBefore.call(self, items, index, focus);
         self.dispatchEvent('change');
     };
 
     self.remove = function(indices) {
         var removed = tree.TreeStore.prototype.remove.call(self, indices);
 
-        self.current -= _.filter(indices, function(i) {
-            return i < self.current;
-        }).length;
+        if (_.indexOf(indices, self.current) === -1) {
+            self.current -= _.filter(indices, function(i) {
+                return i < self.current;
+            }).length;
+        } else {
+            self.current = -1;
+        }
+
+        _.forEach(removed, function(item) {
+            item.playing = false;
+            item.paused = false;
+        });
 
         self.dispatchEvent('change');
         return removed;
@@ -87,10 +107,15 @@ var Playlist = function(player, files) {
     };
 
     self.play = function(i) {
-        self.current = i;
-        player.src = '/file' + self.items[i].path;
-        player.play();
-        self.dispatchEvent('change');
+        if (i < 0 || i >= self.items.length) {
+            self.stop();
+        } else {
+            self.current = i;
+            player.src = '/file' + self.items[i].path;
+            player._loaded = true;
+            player.play();
+            self.dispatchEvent('change');
+        }
     };
     self.next = function() {
         self.play(self.current + 1);
@@ -98,6 +123,14 @@ var Playlist = function(player, files) {
     self.prev = function() {
         self.play(self.current - 1);
     };
+    self.stop = function() {
+        self.current = -1;
+        player.pause();
+        player.currentTime = 0;
+        player._loaded = false;
+        updateStatus();
+        self.dispatchEvent('change');
+    }
 
     self.drag = function(index) {
         var selection = self.getSelection();
@@ -126,19 +159,6 @@ var Playlist = function(player, files) {
             self.insertUriBefore(data.uris, index, data.focus);
             self.update();
         }
-    };
-
-    var updateStatus = function() {
-        _.forEach(self.items, function(item, i) {
-            if (i === self.current) {
-                item.playing = !player.paused;
-                item.paused = player.paused;
-            } else {
-                item.playing = false;
-                item.paused = false;
-            }
-        });
-        self.dispatchEvent('change');
     };
 
     var unregister = [];

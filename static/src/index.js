@@ -100,6 +100,7 @@ Promise.all([
             } else {
                 var index = _.indexOf(store.getElements(), event.currentTarget);
                 player.src = '/file' + store.items[index].path;
+                player._loaded = true;
                 player.play();
             }
         });
@@ -210,7 +211,11 @@ Promise.all([
 
         self.on('play', function(event) {
             event.preventDefault();
-            player.play();
+            if (player._loaded) {
+                player.play();
+            } else {
+                playlist.play(0);
+            }
         });
         self.on('pause', function(event) {
             event.preventDefault();
@@ -218,7 +223,7 @@ Promise.all([
         });
         self.on('stop', function(event) {
             event.preventDefault();
-            player.src = null;
+            playlist.stop();
         });
         self.on('next', function(event) {
             event.preventDefault();
