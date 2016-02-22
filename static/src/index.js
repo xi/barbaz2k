@@ -139,6 +139,32 @@ Promise.all([
 
         tree.treeView(self, element, store);
 
+        muu.$.on(document, 'keydown', function(event) {
+            if (!event.defaultPrevented && !event.ctrlKey && event.altKey) {
+                if (event.keyCode === 72) {  // alt-h
+                    playlist.prev();
+                } else if (event.keyCode === 74) {  // alt-j
+                    if (player.paused) {
+                        player.play();
+                    } else {
+                        player.pause();
+                    }
+                } else if (event.keyCode === 75) {  // alt-k
+                    playlist.stop();
+                } else if (event.keyCode === 76) {  // alt-l
+                    playlist.next();
+                } else if (event.keyCode === 188) {  // alt-<
+                    player.volume -= 0.1;
+                } else if (event.keyCode === 190) {  // alt->
+                    player.volume += 0.1;
+                } else if (event.keyCode === 83) {  // alt-s
+                    document.getElementsByName('q')[0].focus();
+                } else {
+                    console.log(event.keyCode);
+                }
+            }
+        });
+
         // for updating cover art
         return muu.$.on(player, 'play', function() {
             store.update();
