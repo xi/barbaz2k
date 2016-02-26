@@ -16,7 +16,7 @@ static/src/lodash.js: .env
 	. .env/bin/activate && lodash include=assign,clone,concat,filter,find,findIndex,flatten,forEach,indexOf,last,map,some,startsWith,sum -d -o $@
 
 .env:
-	virtualenv -p python3 .env
+	python3 -m venv .env
 	. .env/bin/activate && pip install fakes mutagen audioread
 	. .env/bin/activate && pip install nodeenv
 	echo lodash-cli > node_deps
