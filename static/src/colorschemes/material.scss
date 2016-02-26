@@ -29,3 +29,6 @@ $focus: $line;
     // so instead I avoid top/bottom shadows.
     box-shadow: 3px 0 3px (1px - 3px) $shadow;
 }
+.separator {
+    border: 0 !important;
+}

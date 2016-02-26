@@ -1,0 +1,24 @@
+$select: #D70D92;  // change me!
+
+$dark: desaturate(darken($select, 42%), 30%);
+$light: desaturate(lighten($select, 50%), 30%);
+$bg1: $dark;
+$bg2: $dark;
+$fg1: contrast($bg1, $dark, $light);
+$fg2: contrast($bg2, $dark, $light);
+$border: transparent;
+$line: transparent;
+$shadow: transparent;
+$select-text: contrast($select, $dark, $light);
+$select-inactive: mix($select, $bg2, 80%);
+$focus: mix($bg2, $fg2, 30%);
+
+.topbar {
+    color: $select !important;
+}
+input {
+    border: 1px solid mix($dark, $light, 70%) !important;
+}
+.separator {
+    border: 0 !important;
+}
