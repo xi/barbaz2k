@@ -17,16 +17,37 @@
     @return 0.2126 * $r + 0.7152 * $g + 0.0722 * $b;
 }
 
-@function contrast($base, $dark, $light) {
-    $ldark: luminance($dark);
-    $llight: luminance($light);
+@function calc-contrast($bg, $fg) {
+    $lbg: luminance($bg);
+    $abg: alpha($bg);
+    $lfg: luminance($fg);
+    $afg: alpha($fg);
 
-    $min: 0.05;
-    $threshold: sqrt(($ldark + $min) * ($llight + $min)) - $min;
-
-    @if luminance($base) > $threshold {
-        @return $dark;
+    // Transparency is interpreted with its worst case.
+    // This calculation is slightly different for forground and
+    // background colors.
+    @if $lbg > $lfg {
+        $lbg: max($lbg * $abg, $lfg);
     } @else {
-        @return $light;
+        $lbg: min($lbg * $abg + (1 - $abg), $lfg);
+    }
+    $lfg: $lfg * $afg + $lbg * (1 - $afg);
+
+    @return (max($lbg, $lfg) + 0.05) / (min($lbg, $lfg) + 0.05);
+}
+
+@function contrast($base, $dark: black, $light: white, $bg: false) {
+    @if $bg {
+        @if calc-contrast($dark, $base) >= calc-contrast($light, $base) {
+            @return $dark;
+        } @else {
+            @return $light;
+        }
+    } @else {
+        @if calc-contrast($base, $dark) > calc-contrast($base, $light) {
+            @return $dark;
+        } @else {
+            @return $light;
+        }
     }
 }
