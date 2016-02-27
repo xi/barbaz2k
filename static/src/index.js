@@ -159,8 +159,6 @@ Promise.all([
                     player.volume += 0.1;
                 } else if (event.keyCode === 83) {  // alt-s
                     document.getElementsByName('q')[0].focus();
-                } else {
-                    console.log(event.keyCode);
                 }
             }
         });
