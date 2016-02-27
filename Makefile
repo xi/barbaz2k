@@ -13,7 +13,7 @@ static/barbaz.js: static/src/index.js static/src/tree.js static/src/filestore.js
 	. .env/bin/activate && browserify -r ./static/src/lodash.js:lodash $< -o $@
 
 static/src/lodash.js: .env
-	. .env/bin/activate && lodash include=assign,clone,concat,filter,find,findIndex,flatten,forEach,indexOf,last,map,some,startsWith,sum -d -o $@
+	. .env/bin/activate && lodash include=assign,clone,concat,filter,find,findIndex,flatten,forEach,indexOf,last,map,some,startsWith,sum,union,difference,isArray,isFunction,isString,once -d -o $@
 
 .env:
 	python3 -m venv .env
@@ -24,7 +24,7 @@ static/src/lodash.js: .env
 	echo uglifyjs >> node_deps
 	echo node-sass >> node_deps
 	echo mustache >> node_deps
-	echo xi/muu >> node_deps
+	echo xi/muu#core >> node_deps
 	echo wildlyinaccurate/promise-xhr >> node_deps
 	. .env/bin/activate && nodeenv -p --node=system -r node_deps
 	rm node_deps
