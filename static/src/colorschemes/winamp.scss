@@ -1,0 +1,42 @@
+$bg1-dark: #0F0F17;
+$bg1-light: #383859;
+
+$dark: black;
+$light: white;
+$bg1: mix($bg1-dark, $bg1-light);
+$bg2: $dark;
+$fg1: contrast($bg1, $dark, $light);
+$fg2: #06BD01;
+$border: mix($bg1, $bg2);
+$line: $fg2;
+$shadow: $dark;
+$select: #0D1567;
+$select-text: contrast($select, $dark, $light);
+$select-inactive: mix($select, $bg2, 80%);
+$focus: $fg2;
+
+html {
+    background: linear-gradient(40deg, $bg1-dark, $bg1-light, $bg1-dark) !important;
+    font-weight: bold;
+}
+
+.playback-buttons a {
+    color: #97A8B9 !important;
+    background: #BDCED6 !important;
+    // http://sixrevisions.com/css/how-to-create-inset-typography-with-css3/
+    text-shadow: rgba($shadow, 0.5) -1px 0, rgba($shadow, 0.3) 0 -1px, rgba($light, 0.5) 0 1px, rgba($shadow, 0.3) -1px -2px;
+    box-shadow: -1px -1px 2px 1px rgba($shadow, 0.5) inset, 1px 1px 2px 1px rgba($light, 0.5) inset;
+    border: 0 !important;
+    width: 2em !important;
+
+    &:hover, &:focus {
+        color: $select !important;
+    }
+    &:active {
+        box-shadow: 1px 1px 2px 1px rgba($dark, 0.5) inset, -1px -1px 2px 1px rgba($light, 0.5) inset;
+    }
+}
+
+.separator {
+    border-right-color: #676779 !important;
+}
