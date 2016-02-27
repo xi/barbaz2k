@@ -10,7 +10,7 @@ static/barbaz.min.js: static/barbaz.js .env
 	. .env/bin/activate && cd static && uglifyjs --source-map barbaz.js.map barbaz.js -o barbaz.min.js
 
 static/barbaz.js: static/src/index.js static/src/tree.js static/src/filestore.js static/src/playlist.js static/src/lodash.js .env
-	. .env/bin/activate && browserify $< -o $@
+	. .env/bin/activate && browserify -r ./static/src/lodash.js:lodash $< -o $@
 
 static/src/lodash.js: .env
 	. .env/bin/activate && lodash include=assign,clone,concat,filter,find,findIndex,flatten,forEach,indexOf,last,map,some,startsWith,sum -d -o $@

@@ -35,7 +35,7 @@
  */
 
 var muu = require('muu');
-var _ = require('./lodash');
+var _ = require('lodash');
 
 
 var TreeStoreProto = function() {

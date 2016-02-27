@@ -1,7 +1,7 @@
 var muu = require('muu');
 var xhr = require('promise-xhr');
 var Mustache = require('mustache');
-var _ = require('./lodash');
+var _ = require('lodash');
 
 var tree = require('./tree');
 var Playlist = require('./playlist');
