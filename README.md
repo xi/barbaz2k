@@ -39,3 +39,10 @@ then run `make` again. Available colorschemes can be found in
 
 Change the definition of `MUSIC_DIR` in `server.py`. Also adjust the nginx
 configuration.
+
+# browser compatibility
+
+This has only been tested with chrome.
+
+There are known issues with firefox, because the focusin/focusout events are
+not yet implemented there.
