@@ -36,7 +36,7 @@ var sniffColor = function(className, key) {
 };
 
 Promise.all([
-    xhr.get('/static/templates/foobar.html'),
+    xhr.get('/static/templates/barbaz.html'),
     xhr.get('/static/templates/filetree.html'),
     xhr.get('/static/templates/buttons.html'),
     xhr.get('/static/templates/playlist.html'),
@@ -71,7 +71,7 @@ Promise.all([
     window.player = player;
     window.playlist = playlist;
 
-    registry.registerDirective('foobar', template, function(self, element) {
+    registry.registerDirective('barbaz', template, function(self, element) {
         var store = new FileStore(files);
         window.filestore = store;
 

@@ -1,15 +1,15 @@
-all: static/foobar.css static/foobar.min.js
+all: static/barbaz.css static/barbaz.min.js
 
 run: all
 	. .env/bin/activate && python server.py
 
-static/foobar.css: static/src/foobar.scss static/src/contrast.scss static/src/math.scss static/src/colorschemes/*.scss .env
+static/barbaz.css: static/src/barbaz.scss static/src/contrast.scss static/src/math.scss static/src/colorschemes/*.scss .env
 	. .env/bin/activate && node-sass $< $@
 
-static/foobar.min.js: static/foobar.js .env
-	. .env/bin/activate && cd static && uglifyjs --source-map foobar.js.map foobar.js -o foobar.min.js
+static/barbaz.min.js: static/barbaz.js .env
+	. .env/bin/activate && cd static && uglifyjs --source-map barbaz.js.map barbaz.js -o barbaz.min.js
 
-static/foobar.js: static/src/index.js static/src/tree.js static/src/filestore.js static/src/playlist.js static/src/lodash.js .env
+static/barbaz.js: static/src/index.js static/src/tree.js static/src/filestore.js static/src/playlist.js static/src/lodash.js .env
 	. .env/bin/activate && browserify $< -o $@
 
 static/src/lodash.js: .env
@@ -34,9 +34,9 @@ clean-dev:
 	rm -f static/src/lodash.js
 
 clean-prod:
-	rm -f static/foobar.css
-	rm -f static/foobar.js
-	rm -f static/foobar.js.map
-	rm -f static/foobar.min.js
+	rm -f static/barbaz.css
+	rm -f static/barbaz.js
+	rm -f static/barbaz.js.map
+	rm -f static/barbaz.min.js
 
 clean: clean-dev clean-prod

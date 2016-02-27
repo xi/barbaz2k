@@ -1,6 +1,6 @@
 .env
-static/foobar.css
-static/foobar.js
-static/foobar.min.js
-static/foobar.js.map
+static/barbaz.css
+static/barbaz.js
+static/barbaz.min.js
+static/barbaz.js.map
 static/src/lodash.js
