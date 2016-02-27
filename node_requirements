@@ -1,0 +1,7 @@
+lodash-cli
+browserify
+uglifyjs
+node-sass
+mustache
+xi/muu#core
+wildlyinaccurate/promise-xhr

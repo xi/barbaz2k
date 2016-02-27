@@ -15,19 +15,11 @@ static/barbaz.js: static/src/index.js static/src/tree.js static/src/filestore.js
 static/src/lodash.js: .env
 	. .env/bin/activate && lodash include=assign,clone,concat,filter,find,findIndex,flatten,forEach,indexOf,last,map,some,startsWith,sum,union,difference,isArray,isFunction,isString,once -d -o $@
 
-.env:
+.env: node_requirements
 	python3 -m venv .env
 	. .env/bin/activate && pip install fakes mutagen audioread
 	. .env/bin/activate && pip install nodeenv
-	echo lodash-cli > node_deps
-	echo browserify >> node_deps
-	echo uglifyjs >> node_deps
-	echo node-sass >> node_deps
-	echo mustache >> node_deps
-	echo xi/muu#core >> node_deps
-	echo wildlyinaccurate/promise-xhr >> node_deps
-	. .env/bin/activate && nodeenv -p --node=system -r node_deps
-	rm node_deps
+	. .env/bin/activate && nodeenv -p --node=system -r node_requirements
 
 clean-dev:
 	rm -rf .env
