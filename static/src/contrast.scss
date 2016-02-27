@@ -36,18 +36,18 @@
     @return (max($lbg, $lfg) + 0.05) / (min($lbg, $lfg) + 0.05);
 }
 
-@function contrast($base, $dark: black, $light: white, $bg: false) {
+@function contrast($base, $c1: black, $c2: white, $bg: false) {
     @if $bg {
-        @if calc-contrast($dark, $base) >= calc-contrast($light, $base) {
-            @return $dark;
+        @if calc-contrast($c1, $base) >= calc-contrast($c2, $base) {
+            @return $c1;
         } @else {
-            @return $light;
+            @return $c2;
         }
     } @else {
-        @if calc-contrast($base, $dark) > calc-contrast($base, $light) {
-            @return $dark;
+        @if calc-contrast($base, $c1) > calc-contrast($base, $c2) {
+            @return $c1;
         } @else {
-            @return $light;
+            @return $c2;
         }
     }
 }
