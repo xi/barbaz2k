@@ -266,18 +266,18 @@ var treeView = function(self, element, store) {
             var ev = muu.$.createEvent(
                 'muu-activate', undefined, undefined, event);
             element.dispatchEvent(ev);
+        } else if (event.keyCode === 32) {  // space
+            event.preventDefault();
+            if (event.ctrlKey) {
+                store.items[index].selected = !store.items[index].selected;
+            } else {
+                _.forEach(store.items, function(item, i) {
+                    item.selected = i === index;
+                });
+            }
+            store.update();
         } else if (!event.ctrlKey && !event.altKey) {
-            if (event.keyCode === 32) {
-                event.preventDefault();
-                if (event.ctrlKey) {
-                    store.items[index].selected = !store.items[index].selected;
-                } else {
-                    _.forEach(store.items, function(item, i) {
-                        item.selected = i === index;
-                    });
-                }
-                store.update();
-            } else if (event.keyCode === 16) {  // shift
+            if (event.keyCode === 16) {  // shift
                 event.preventDefault();
                 initialShiftIndex = index;
             } else if (event.keyCode === 46) {  // delete
