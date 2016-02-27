@@ -117,7 +117,7 @@ input {
         height: $topbar-height;
         margin: 0 0.5em;
         border-left: 1px solid $border;
-        border-right: 1px solid #FDFDFE;
+        border-right: 1px solid contrast($border, $fg1, contrast($fg1, $dark, $light));
     }
 
     > *:last-child {
