@@ -18,6 +18,11 @@ $focus: $line;
 .file-browser {
     border: 0 !important;
 }
+.topbar,
+.statusbar {
+    color: $fg1;
+    background-color: $bg1;
+}
 .filetree {
     background: #f5f5f5 !important;
 }
@@ -25,9 +30,7 @@ $focus: $line;
     box-shadow: 0 0 3px 1px $shadow;
 }
 .file-browser {
-    // HACK: I cannot manage to get topbar and statusbar above this,
-    // so instead I avoid top/bottom shadows.
-    box-shadow: 3px 0 3px (1px - 3px) $shadow;
+    box-shadow: 0 0 3px 1px $shadow;
 }
 .separator {
     border: 0 !important;
