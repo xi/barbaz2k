@@ -1,0 +1,175 @@
+////
+/// This provides some common mathemetical functions implemented in pure sass.
+///
+/// The implementations are based on taylor expansions. The `$steps` argument
+/// defines how many steps of the series will be calculated. So a higher number
+/// will result in higher precision.
+///
+/// Taylor expansions converge quickly around their centers, so a decent
+/// approximation can be calculated in constant time.
+///
+/// If the input $x is too far off of the center, it is converted to a closer
+/// value $y in a way that allows to calculate f($x) from f($y). This
+/// conversion uses exact arithmetics and can be done in constant or
+/// logarithmic time.
+///
+/// This approach is havily inspired by
+/// <http://www.sassmeister.com/gist/ad6e6771df050ff3727f>. However, the
+/// implementations are much more efficient.
+///
+/// @group math
+////
+
+/// @type number
+$planifolia-math-steps-default: 32 !default;
+
+/// @type number
+$pi: 3.141592653589793;
+
+@function _planifolia-exp-taylor-0($x, $steps) {
+  $item: 1;
+  $result: 1;
+
+  @for $i from 1 to $steps {
+    $item: $item * $x / $i;
+    $result: $result + $item;
+  }
+
+  @return $result;
+}
+
+@function _planifolia-ln-taylor-1($x, $steps) {
+  $z: ($x - 1) / ($x + 1);
+
+  $power: $z;
+  $result: $z;
+
+  @for $i from 1 to $steps {
+    $power: $power * $z * $z;
+    $result: $result + $power / (2 * $i + 1);
+  }
+
+  @return 2 * $result;
+}
+
+@function _planifolia-sin-taylor-0($x, $steps) {
+  $item: $x;
+  $result: $x;
+
+  @for $i from 1 to $steps {
+    $item: -$item * $x * $x / (2 * $i) / (2 * $i + 1);
+    $result: $result + $item;
+  }
+
+  @return $result;
+}
+
+@function _planifolia-pow-int($base, $exponent) {
+  @if $exponent < 0 {
+    @return 1 / _planifolia-pow-int($base, -$exponent);
+  } @else if $exponent == 0 {
+    @return 1;
+  } @else if $exponent == 1 {
+    @return $base;
+  } @else {
+    $exp: floor($exponent / 2);
+    $pow: _planifolia-pow-int($base, $exp);
+    @if $exp * 2 == $exponent {
+      @return $pow * $pow;
+    } @else {
+      @return $pow * $pow * $base;
+    }
+  }
+}
+
+@function _planifolia-log-approx($x) {
+  @if $x <= 0 {
+    @error 'cannot calculate log of #{$x}';
+  } @else if $x >= 1 {
+    // choose the smaller option (-1) because it yield better
+    // results in ln().
+    @return str-length(inspect(round($x))) - 1;
+  } @else {
+    @return -1 * str-length(inspect(round(1 / $x)));
+  }
+}
+
+/// @param {number} $x
+/// @param {number} $steps [32] - steps of the taylor expansion
+/// @return {number}
+@function ln($x, $steps: $planifolia-math-steps-default) {
+  $ln10: 2.302585092994046;
+  $approx: _planifolia-log-approx($x);
+  // $y is in range [1, 10]
+  $y: $x / _planifolia-pow-int(10, $approx);
+  @return $approx * $ln10 + _planifolia-ln-taylor-1($y, $steps);
+}
+
+/// @param {number} $x
+/// @param {number} $steps [32] - steps of the taylor expansion
+/// @return {number}
+@function log($x, $steps: $planifolia-math-steps-default) {
+  $ln10: 2.302585092994046;
+  @return ln($x, $steps) / $ln10;
+}
+
+/// @param {number} $x
+/// @param {number} $exponent
+///   If $x is 0 or below, $exponent needs to be an integer.
+/// @param {number} $steps [32] - steps of the taylor expansion
+/// @return {number}
+@function pow($x, $exponent, $steps: $planifolia-math-steps-default) {
+  $exp1: round($exponent);
+  $exp2: $exponent - $exp1;
+  $pow1: _planifolia-pow-int($x, $exp1);
+  @if $exp2 == 0 {
+    @return $pow1;
+  } @else {
+    $y: ln($x, $steps) * $exp2;
+    $pow2: _planifolia-exp-taylor-0($y, $steps);
+    @return $pow1 * $pow2;
+  }
+}
+
+/// @param {number} $x
+/// @param {number} $exponent
+/// @param {number} $steps [32] - steps of the taylor expansion
+/// @return {number}
+@function nth-root($x, $exponent, $steps: $planifolia-math-steps-default) {
+  @return pow($x, 1 / $exponent, $steps);
+}
+
+/// @param {number} $x
+/// @param {number} $steps [32] - steps of the taylor expansion
+/// @return {number}
+@function sqrt($x, $steps: $planifolia-math-steps-default) {
+  @return nth-root($x, 2, $steps);
+}
+
+/// @param {number} $x
+/// @param {number} $steps [32] - steps of the taylor expansion
+/// @return {number}
+@function sin($x, $steps: $planifolia-math-steps-default) {
+  $y: $x % (2 * $pi);
+  @if $y > $pi {
+    @return -1 * sin($y - $pi);
+  } @else if $y < 0 {
+    @return -1 * sin(-$y);
+  } @else {
+    @return _planifolia-sin-taylor-0($y, $steps);
+  }
+}
+
+/// @param {number} $x
+/// @param {number} $steps [32] - steps of the taylor expansion
+/// @return {number}
+@function cos($x, $steps: $planifolia-math-steps-default) {
+  @return sin($x - $pi / 2, $steps);
+}
+
+/// @param {number} $x
+/// @param {number} $steps [32] - steps of the taylor expansion
+/// @return {number}
+@function tan($x, $steps: $planifolia-math-steps-default) {
+  @return sin($x, $steps) / $cos($x, $steps);
+}

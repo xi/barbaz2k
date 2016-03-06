@@ -4,12 +4,12 @@ $dark: desaturate(darken($select, 42%), 30%);
 $light: desaturate(lighten($select, 50%), 30%);
 $bg1: $dark;
 $bg2: $dark;
-$fg1: contrast($bg1, $dark, $light);
-$fg2: contrast($bg2, $dark, $light);
+$fg1: contrast-color($bg1, $dark, $light);
+$fg2: contrast-color($bg2, $dark, $light);
 $border: transparent;
 $line: transparent;
 $shadow: transparent;
-$select-text: contrast($select, $dark, $light);
+$select-text: contrast-color($select, $dark, $light);
 $select-inactive: mix($select, $bg2, 80%);
 $focus: mix($bg2, $fg2, 30%);
 

@@ -5,13 +5,13 @@ $dark: black;
 $light: white;
 $bg1: mix($bg1-dark, $bg1-light);
 $bg2: $dark;
-$fg1: contrast($bg1, $dark, $light);
+$fg1: contrast-color($bg1, $dark, $light);
 $fg2: #06BD01;
 $border: mix($bg1, $bg2);
 $line: $fg2;
 $shadow: $dark;
 $select: #0D1567;
-$select-text: contrast($select, $dark, $light);
+$select-text: contrast-color($select, $dark, $light);
 $select-inactive: mix($select, $bg2, 80%);
 $focus: $fg2;
 

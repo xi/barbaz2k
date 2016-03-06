@@ -2,13 +2,13 @@ $dark: black;
 $light: #C7DFFF;
 $bg1: #808895;
 $bg2: #1B3D7D;
-$fg1: contrast($bg1, $dark, $light);
-$fg2: contrast($bg2, $dark, $light);
+$fg1: contrast-color($bg1, $dark, $light);
+$fg2: contrast-color($bg2, $dark, $light);
 $border: $dark;
 $line: desaturate(mix($bg2, $fg2, 30%), 90%);
 $shadow: $dark;
 $select: #415A82;
-$select-text: contrast($select, $dark, $light);
+$select-text: contrast-color($select, $dark, $light);
 $select-inactive: mix($select, $bg2, 80%);
 $focus: mix($bg2, $fg2, 30%);
 

@@ -3,7 +3,7 @@ all: static/barbaz.css static/barbaz.min.js
 run: all
 	. .env/bin/activate && python server.py
 
-static/barbaz.css: static/src/barbaz.scss static/src/contrast.scss static/src/math.scss static/src/colorschemes/*.scss .env
+static/barbaz.css: static/src/barbaz.scss static/bower_components/sass-planifolia/sass/contrast.scss static/bower_components/sass-planifolia/sass/math.scss static/src/colorschemes/*.scss .env
 	. .env/bin/activate && node-sass $< $@
 
 static/barbaz.min.js: static/barbaz.js .env

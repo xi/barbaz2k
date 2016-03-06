@@ -2,13 +2,13 @@ $dark: #333;
 $light: white;
 $bg1: hsl(270, 90%, 61%);  // change me!
 $bg2: $light;
-$fg1: contrast($bg1, $dark, $light);
-$fg2: contrast($bg2, $dark, $light);
+$fg1: contrast-color($bg1, $dark, $light);
+$fg2: contrast-color($bg2, $dark, $light);
 $border: desaturate(mix($bg1, $fg1, 30%), 90%);
 $line: desaturate(mix($bg2, $fg2, 30%), 90%);
 $shadow: $dark;
 $select: $bg1;
-$select-text: contrast($select, $dark, $light);
+$select-text: contrast-color($select, $dark, $light);
 $select-inactive: mix($select, $bg2, 80%);
 $focus: $line;
 

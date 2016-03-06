@@ -1,6 +1,7 @@
 // variables
 
-@import "contrast";
+@import "../bower_components/sass-planifolia/sass/math";
+@import "../bower_components/sass-planifolia/sass/contrast";
 @import "colorschemes/foobar";
 
 $topbar-height: 2rem;
@@ -117,7 +118,7 @@ input {
         height: $topbar-height;
         margin: 0 0.5em;
         border-left: 1px solid $border;
-        border-right: 1px solid contrast($border, $fg1, contrast($fg1, $dark, $light));
+        border-right: 1px solid contrast-color($border, $fg1, contrast-color($fg1, $dark, $light));
     }
 
     > *:last-child {
