@@ -4,6 +4,12 @@
 @import "../bower_components/sass-planifolia/sass/contrast";
 @import "colorschemes/foobar";
 
+checks {
+  check1: contrast-check($bg1, $fg1);
+  check2: contrast-check($bg2, $fg2);
+  check-selected: contrast-check($select, $select-text);
+}
+
 $topbar-height: 2rem;
 $statusbar-height: 1.5rem;
 
