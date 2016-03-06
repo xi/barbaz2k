@@ -1,7 +1,7 @@
 $select: #D70D92;  // change me!
 
 $dark: desaturate(darken($select, 42%), 30%);
-$light: desaturate(lighten($select, 50%), 30%);
+$light: desaturate(lighten($select, 53%), 30%);
 $bg1: $dark;
 $bg2: $dark;
 $fg1: contrast-color($bg1, $dark, $light);
