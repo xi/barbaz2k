@@ -4,4 +4,4 @@ uglifyjs
 node-sass
 mustache
 xi/muu#core
-wildlyinaccurate/promise-xhr
+xi/promise-xhr
