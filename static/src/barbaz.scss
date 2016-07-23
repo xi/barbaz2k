@@ -151,11 +151,11 @@ input {
     width: 5em;
 }
 
-.playback-buttons a {
-    display: inline-block;
+.playback-buttons button {
+    background: none;
+    color: inherit;
     width: 1.5em;
     padding: 0.2em;
-    text-align: center;
     border: 1px solid transparent;
     border-radius: 2px;
 

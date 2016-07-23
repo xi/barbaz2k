@@ -15,6 +15,8 @@ $focus: #006FA5;
 .topbar {
     background: linear-gradient(to top, #E1E6F5, #D3DAED 60%, $bg1);
     color: $light;
+}
+.playback-buttons button {
     text-shadow: 1px 0 $dark,-1px 0 $dark,0 1px $dark,0 -1px $dark;
 }
 .volume,

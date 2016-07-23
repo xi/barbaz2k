@@ -22,8 +22,7 @@ $focus: mix($bg2, $fg2, 30%);
     background: $bg1 !important;
 }
 
-.playback-buttons a {
-    display: inline-block;
+.playback-buttons button {
     border-radius: 50% !important;
     background: linear-gradient(to top, #99A4B5, #FBFEFF) !important;
     text-shadow: none !important;
